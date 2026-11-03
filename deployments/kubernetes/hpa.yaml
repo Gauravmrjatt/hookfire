@@ -1,0 +1,27 @@
+# HPA scales on CPU first (PRD §38). Queue-depth/delivery-lag-driven scaling
+# (the more meaningful signal) is documented in docs/scaling.md — it arrives
+# with a custom metrics provider (Prometheus adapter) exposing
+# webhook_queue_depth as an ExternalMetric, and overriding this HPA with an
+# ExternalMetricSource.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hookfire
+  namespace: hookfire
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hookfire
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300

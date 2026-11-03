@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hookfire
+  namespace: hookfire
+  labels:
+    app: hookfire
+spec:
+  # replicas > 1 is safe by design: PostgreSQL row locking
+  # (FOR UPDATE SKIP LOCKED) prevents two instances processing the same
+  # delivery, and Redis token buckets rate-limit per endpoint cluster-wide.
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hookfire
+  template:
+    metadata:
+      labels:
+        app: hookfire
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: /metrics
+    spec:
+      containers:
+        - name: engine
+          image: ghcr.io/your-org/hookfire:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: hookfire-config
+            - secretRef:
+                name: hookfire-secrets
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true

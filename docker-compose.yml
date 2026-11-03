@@ -1,0 +1,49 @@
+services:
+  hookfire:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      JWT_SECRET: ${JWT_SECRET:-change-me}
+      DATABASE_URL: postgres://webhook:webhook@postgres:5432/webhook_engine?sslmode=disable
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: webhook_engine
+      POSTGRES_USER: webhook
+      POSTGRES_PASSWORD: webhook
+      # integration tests use the webhook_test database
+      POSTGRES_MULTIPLE_DATABASES: webhook_test
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webhook -d webhook_engine"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./deployments/docker/initdb:/docker-entrypoint-initdb.d
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
