@@ -112,7 +112,7 @@ export function SearchInput({
         }}
         placeholder={placeholder}
         aria-label={label}
-        className="pl-8 pr-8"
+        className="pl-[28px] pr-[28px]"
       />
       {value ? (
         <button

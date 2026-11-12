@@ -57,7 +57,7 @@ export function DropdownMenuCheckboxItem({
     <DropdownMenuPrimitive.CheckboxItem
       checked={checked}
       className={cn(
-        "relative flex cursor-default select-none items-center gap-3 rounded-xs py-2 pl-8 pr-3 text-xs text-fg outline-none",
+        "relative flex cursor-default select-none items-center gap-3 rounded-xs py-2 pl-[24px] pr-3 text-xs text-fg outline-none",
         "transition-colors duration-[85ms] focus:bg-surface-strong",
         className,
       )}

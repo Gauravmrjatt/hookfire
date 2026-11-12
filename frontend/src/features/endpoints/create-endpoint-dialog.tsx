@@ -136,7 +136,7 @@ export function CreateEndpointDialog({
               <div className="flex flex-col gap-2">
                 <Label htmlFor="signing-secret">Signing secret</Label>
                 <div className="flex items-center gap-2">
-                  <div className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-xs border border-line-strong bg-surface px-4">
+                  <div className="flex h-[32px] min-w-0 flex-1 items-center gap-2 rounded-xs border border-line-strong bg-surface px-4">
                     <KeyRound aria-hidden="true" className="size-[13px] shrink-0 text-fg-muted" />
                     <code className="truncate font-mono text-2xs text-fg">
                       {revealed ? created.secret : "•".repeat(32)}

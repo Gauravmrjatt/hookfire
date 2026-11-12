@@ -10,7 +10,7 @@ export const Label = React.forwardRef<
   <LabelPrimitive.Root
     ref={ref}
     className={cn(
-      "text-2xs font-medium text-fg-muted peer-disabled:cursor-not-allowed peer-disabled:opacity-60",
+      "text-xs font-medium text-fg peer-disabled:cursor-not-allowed peer-disabled:opacity-60",
       className,
     )}
     {...props}
@@ -26,7 +26,7 @@ export const Input = React.forwardRef<
     ref={ref}
     type={type}
     className={cn(
-      "focus-ring h-8 w-full rounded-xs border border-line-strong bg-surface px-4 text-xs text-fg",
+      "focus-ring h-[32px] w-full rounded-xs border border-line-strong bg-surface px-4 text-xs text-fg",
       "placeholder:text-fg-muted",
       "transition-colors duration-[120ms] hover:bg-surface-raised/30",
       "disabled:cursor-not-allowed disabled:opacity-45",
@@ -45,7 +45,7 @@ export const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "focus-ring w-full resize-y rounded-xs border border-line-strong bg-surface px-4 py-3 font-mono text-2xs leading-[18px] text-fg",
+      "focus-ring w-full resize-y rounded-xs border border-line-strong bg-surface px-4 py-4 font-mono text-2xs leading-[18px] text-fg",
       "placeholder:text-fg-muted",
       "transition-colors duration-[120ms] hover:bg-surface-raised/30",
       "disabled:cursor-not-allowed disabled:opacity-45",

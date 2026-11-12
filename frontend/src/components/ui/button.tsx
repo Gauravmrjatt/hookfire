@@ -13,19 +13,19 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
         secondary:
-          "border border-line bg-surface-strong text-fg hover:bg-surface-strong/80 active:bg-surface-strong/70",
+          "bg-control text-fg shadow-1 hover:bg-control-hover active:bg-control-active",
         outline:
-          "border border-line-strong bg-transparent text-fg hover:bg-surface-raised active:bg-surface-strong",
+          "border border-line-strong bg-transparent text-fg hover:bg-control active:bg-control-active",
         ghost:
-          "bg-transparent text-fg-muted hover:bg-surface-raised hover:text-fg active:bg-surface-strong",
+          "bg-transparent text-fg-muted hover:bg-control hover:text-fg active:bg-control-active",
         danger:
           "border border-danger/30 bg-danger/10 text-danger hover:bg-danger/20 active:bg-danger/25",
         link: "h-auto bg-transparent p-0 text-accent-ink underline-offset-4 hover:underline",
       },
       size: {
-        sm: "h-7 px-3 text-2xs",
-        default: "h-8 px-4 text-xs",
-        lg: "h-10 px-6 text-sm",
+        sm: "h-[28px] px-6 text-2xs",
+        default: "h-[32px] px-8 text-xs",
+        lg: "h-[40px] px-8 text-sm",
         icon: "size-[32px] p-0",
         "icon-sm": "size-[28px] p-0",
       },

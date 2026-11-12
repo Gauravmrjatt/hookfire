@@ -115,7 +115,7 @@ export function LoginPage() {
 
           <section
             aria-labelledby="connect-heading"
-            className="rounded-xs border border-line bg-surface-raised/[0.35] p-8"
+            className="mx-auto w-full max-w-[400px] rounded-xs border border-line bg-surface-raised/[0.35] p-8 lg:max-w-none"
           >
             <div className="mb-6 flex flex-col gap-1">
               <h1 id="connect-heading" className="text-sm font-semibold tracking-[-0.01em] text-fg">

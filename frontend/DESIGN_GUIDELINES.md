@@ -79,6 +79,9 @@ Component guidance and component code **must** reference semantic tokens (`bg-su
 | Surface | `surface.muted` | `#ffffff` |
 | Surface | `surface.raised` | `#242424` |
 | Surface | `surface.strong` | `#2e2e2e` |
+| Surface | `control.base` | `rgba(255,255,255,.06)` |
+| Surface | `control.hover` | `rgba(255,255,255,.12)` |
+| Surface | `control.active` | `rgba(255,255,255,.16)` |
 | Text | `text.primary` | `#fafafa` |
 | Text | `text.secondary` | `#808080` |
 | Text | `text.tertiary` | `#aeaeae` |
@@ -87,6 +90,7 @@ Component guidance and component code **must** reference semantic tokens (`bg-su
 | Type | `font.family.stack` | `Inter, Inter Fallback, sans-serif` |
 | Type | `font.size.base` | `13px` |
 | Type | `font.weight.base` | `440` |
+| Type | `font.weight.medium` | `530` |
 | Type | `font.lineHeight.base` | `20px` |
 | Space | `space.1 … space.8` | `2, 4, 6, 8, 10, 11, 12, 15px` |
 | Radius | `radius.xs` | `6px` |
@@ -107,6 +111,9 @@ Every token below is implemented in `src/index.css`. Components must use these n
 | `surface-raised/35` | — | `bg-surface-raised/[0.35]` | Card fill over the canvas | Interactive targets |
 | `surface-strong` | `--surface-strong` | `bg-surface-strong` | Hover fill, selected nav, switch track | Page canvas |
 | `surface-inverse` | `--surface-muted` | `bg-surface-inverse` | High-emphasis primary button | Large areas |
+| `control` | `--control-base` | `bg-control` | Neutral control fill (buttons, icon actions, quiet toolbars) | Page canvas |
+| `control-hover` | `--control-hover` | `bg-control-hover` | Hover fill for `control` | Default state |
+| `control-active` | `--control-active` | `bg-control-active` | Pressed/expanded fill for `control` | Hover state |
 | `fg` | `--text-primary` | `text-fg` | Primary text, values, titles | Metadata you want de-emphasised |
 | `fg-muted` | `--text-secondary` | `text-fg-muted` | Secondary text on `surface` and tinted fills | Text on full `surface-raised` |
 | `fg-subtle` | `--text-tertiary` | `text-fg-subtle` | Secondary text on `surface-raised`; mono ids; JSON | Body copy |
@@ -167,7 +174,7 @@ If a pair is not in this table, it **must** be measured before shipping. "It loo
 | `sm` | 15px | 22px | `text-sm` | Dialog titles, page section leads, login form title |
 | `md` | 21px | 28px | `text-md` | Page H1 only (one per page) |
 
-**Weight:** `440` body, `500` labels and badges, `600` headings and numeric values. Use `font-medium`/`font-semibold`; never add a fourth weight.
+**Weight:** `440` body, `530` labels, buttons and badges, `600` headings and numeric values. Use `font-medium`/`font-semibold`; never add a fourth weight.
 
 **Tracking:** `-0.02em` on `md` headings and large numeric values, `-0.01em` on `sm`/card titles, `0` elsewhere.
 
@@ -195,7 +202,7 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 | `space.7` | 12px | `p-7`, `gap-7` |
 | `space.8` | 15px | `p-8`, `gap-8` |
 
-**Component heights** use the 4 px base so layout stays predictable: `h-7` 28 px (small controls, top bar strip), `h-8` 32 px (default input/button/nav row), `h-10` 40 px (large button), `h-[48px]` (app chrome), `h-[18px]` (kbd).
+**Component heights** use the 4 px base so layout stays predictable: `h-[28px]` (small controls, top bar strip), `h-[32px]` (default input/button/nav row), `h-[40px]` (large button), `h-[48px]` (app chrome), `h-[18px]` (kbd). Because the brand spacing keys override Tailwind's numeric spacing namespace, height utilities **must** be written as arbitrary values (`h-[32px]`), never `h-8` (which resolves to 15 px).
 
 **Rhythm:**
 - Inside a control: `gap-2` (4 px) to `gap-3` (6 px).
@@ -273,29 +280,29 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.1 Button
 
-**Anatomy:** optional leading icon (16 px) · label (13 px, medium) · optional trailing icon. Gap `gap-2`, horizontal padding `px-4`, height `h-8`, radius 6 px.
+**Anatomy:** optional leading icon (16 px) · label (13 px, medium) · optional trailing icon. Gap `gap-2`, horizontal padding `px-8` (15 px) at 32/40 px and `px-6` (11 px) at 28 px, height `h-[32px]`, radius 6 px.
 
 **Variants**
 
 | Variant | Fill | Border | Text | Use |
 |---|---|---|---|---|
 | `default` | `surface-inverse` (white) | none | `primary-foreground` (black) | The single primary action on a screen |
-| `secondary` | `surface-strong` | `line` | `fg` | Secondary action inside a dense surface |
+| `secondary` | `control` (6% white) + `shadow-1` | none (the shadow supplies the hairline) | `fg` | Secondary action inside a dense surface |
 | `outline` | transparent | `line-strong` | `fg` | Toolbar and row actions that need a boundary |
 | `ghost` | transparent | none | `fg-muted` → `fg` on hover | Icon actions, tertiary navigation |
 | `danger` | `danger/10` | `danger/30` | `danger` | Destructive confirmation only |
 | `link` | transparent | none | `accent-ink` | Inline navigation inside prose |
 
-**Sizes:** `sm` 28 px/11 px text · `default` 32 px/13 px · `lg` 40 px/15 px · `icon` 32×32 · `icon-sm` 28×28.
+**Sizes:** `sm` 28 px/11 px text/`px-6` · `default` 32 px/13 px/`px-8` · `lg` 40 px/15 px/`px-8` · `icon` 32×32 · `icon-sm` 28×28.
 
 **States**
 
 | State | Visual | Behaviour |
 |---|---|---|
 | Default | As variant | — |
-| Hover | `default`: white at 90%; others: one surface step lighter | Pointer only; duration 120 ms |
+| Hover | `default`: white at 90%; `secondary`/`outline`/`ghost`: `control-hover` | Pointer only; duration 120 ms |
 | Focus-visible | `.focus-ring` (2 px offset ring) | Always visible, including on dark cards |
-| Active | One further surface step; no transform | Must not shift layout |
+| Active | `control-active` (or one further surface step); no transform | Must not shift layout |
 | Disabled | `opacity-45`, `pointer-events-none` | Keep the label readable; add a tooltip explaining why when the reason is not obvious |
 | Loading | Spinner replaces nothing — it is prepended, label stays, `aria-busy="true"`, `sr-only` "Working" | Button is disabled while pending; width must not jump |
 | Error | Buttons do not own error state; the mutation surfaces a toast and the form surfaces a `FieldError` | Never colour a button red after a failed request |
@@ -331,7 +338,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.3 Text input and textarea
 
-**Anatomy:** label (11 px, `fg-muted`) · control (32 px, `surface` fill, 1 px `line-strong`, radius 6 px, `px-4`) · optional help text (11 px) · optional error (11 px, `danger`, `role="alert"`).
+**Anatomy:** label (13 px, `fg`, weight 530) · control (32 px, `surface` fill, 1 px `line-strong`, radius 6 px, `px-4`) · optional help text (11 px) · optional error (11 px, `danger`, `role="alert"`).
 
 | State | Visual |
 |---|---|

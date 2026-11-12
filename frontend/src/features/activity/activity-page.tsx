@@ -96,7 +96,7 @@ export function ActivityPage() {
         description="Every delivery the engine has attempted, newest first. Filters are server-side; the feed refreshes every five seconds while live."
         actions={
           <>
-            <div className="flex h-8 items-center gap-3 rounded-xs border border-line bg-surface-raised/40 px-3">
+            <div className="flex h-[32px] items-center gap-3 rounded-xs border border-line bg-surface-raised/40 px-3">
               <label htmlFor="live-toggle" className="text-2xs text-fg-muted">
                 Live
               </label>

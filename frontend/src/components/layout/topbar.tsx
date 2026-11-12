@@ -77,7 +77,7 @@ export function Topbar({
       <button
         type="button"
         onClick={onOpenCommand}
-        className="focus-ring ml-auto hidden h-7 w-[220px] items-center gap-2 rounded-xs border border-line bg-surface-raised/40 px-3 text-2xs text-fg-muted transition-colors duration-[120ms] hover:border-line-strong hover:text-fg md:flex"
+        className="focus-ring ml-auto hidden h-[28px] w-[220px] items-center gap-2 rounded-xs border border-line bg-surface-raised/40 px-3 text-2xs text-fg-muted transition-colors duration-[120ms] hover:border-line-strong hover:text-fg md:flex"
         aria-label="Open command palette"
       >
         <Search aria-hidden="true" className="size-[13px]" />

@@ -20,6 +20,9 @@
   --text-md: 21px;
   --text-md--line-height: 28px;
 
+  /* The console's control weight: labels, buttons, badges. */
+  --font-weight-medium: 530;
+
   /* Radius — one system radius for controls and containers alike. */
   --radius-xs: 6px;
 
@@ -45,6 +48,9 @@
   --color-surface-raised: var(--surface-raised);
   --color-surface-strong: var(--surface-strong);
   --color-surface-inverse: var(--surface-muted);
+  --color-control: var(--control-base);
+  --color-control-hover: var(--control-hover);
+  --color-control-active: var(--control-active);
   --color-fg: var(--text-primary);
   --color-fg-muted: var(--text-secondary);
   --color-fg-subtle: var(--text-tertiary);
@@ -85,6 +91,12 @@
   --surface-raised: #242424;
   --surface-strong: #2e2e2e;
   --surface-muted: #ffffff;
+
+  /* Translucent control fill, layered the way the console does it: a 6% white
+     base with hover/active overlays rather than a new opaque surface. */
+  --control-base: rgba(255, 255, 255, 0.06);
+  --control-hover: rgba(255, 255, 255, 0.12);
+  --control-active: rgba(255, 255, 255, 0.16);
 
   --text-primary: #fafafa;
   --text-secondary: #808080;

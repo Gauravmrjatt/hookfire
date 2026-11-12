@@ -74,7 +74,7 @@ export function NavContent({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={({ isActive }) =>
               cn(
-                "focus-ring group flex h-8 items-center gap-3 rounded-xs px-3 text-xs transition-colors duration-[85ms]",
+                "focus-ring group flex h-[32px] items-center gap-3 rounded-xs px-3 text-xs transition-colors duration-[85ms]",
                 isActive
                   ? "bg-surface-raised text-fg"
                   : "text-fg-muted hover:bg-surface-raised/60 hover:text-fg",
@@ -109,7 +109,7 @@ export function NavContent({ onNavigate }: { onNavigate?: () => void }) {
           onClick={onNavigate}
           className={({ isActive }) =>
             cn(
-              "focus-ring group flex h-8 items-center gap-3 rounded-xs px-3 text-xs transition-colors duration-[85ms]",
+              "focus-ring group flex h-[32px] items-center gap-3 rounded-xs px-3 text-xs transition-colors duration-[85ms]",
               isActive
                 ? "bg-surface-raised text-fg"
                 : "text-fg-muted hover:bg-surface-raised/60 hover:text-fg",
@@ -123,7 +123,7 @@ export function NavContent({ onNavigate }: { onNavigate?: () => void }) {
           href="https://github.com/Gauravmrjatt/hookfire"
           target="_blank"
           rel="noreferrer"
-          className="focus-ring group flex h-8 items-center gap-3 rounded-xs px-3 text-xs text-fg-muted transition-colors duration-[85ms] hover:bg-surface-raised/60 hover:text-fg"
+          className="focus-ring group flex h-[32px] items-center gap-3 rounded-xs px-3 text-xs text-fg-muted transition-colors duration-[85ms] hover:bg-surface-raised/60 hover:text-fg"
         >
           <Code2 aria-hidden="true" className="size-[15px] shrink-0" />
           Source

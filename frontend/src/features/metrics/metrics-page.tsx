@@ -104,7 +104,7 @@ export function MetricsPage() {
         description="Runtime health from the engine's instrumentation. Charts are a session-local window built from /v1/stats polling — Prometheus remains the source of truth for history and alerting."
         actions={
           <>
-            <div className="flex h-8 items-center gap-3 rounded-xs border border-line bg-surface-raised/40 px-3">
+            <div className="flex h-[32px] items-center gap-3 rounded-xs border border-line bg-surface-raised/40 px-3">
               <label htmlFor="metrics-live" className="text-2xs text-fg-muted">
                 Live
               </label>

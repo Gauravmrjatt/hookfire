@@ -64,7 +64,7 @@ export function TableHead({ className, ...props }: React.ThHTMLAttributes<HTMLTa
     <th
       scope="col"
       className={cn(
-        "h-8 whitespace-nowrap px-8 text-left text-2xs font-medium text-fg-muted",
+        "h-[32px] whitespace-nowrap px-8 text-left text-2xs font-medium text-fg-muted",
         className,
       )}
       {...props}
