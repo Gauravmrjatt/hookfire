@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ArrowUpRight, Plus, Send } from "lucide-react";
+import { ArrowUpRight, Plus, Send, X } from "lucide-react";
 
 import { PageHeader } from "@/components/common/page-header";
 import { EmptyState, ErrorState, LoadingState } from "@/components/common/states";
@@ -33,6 +33,7 @@ export function DeliveriesPage() {
   const [params, setParams] = useSearchParams();
   const [status, setStatus] = useState(params.get("status") ?? "all");
   const [endpointId, setEndpointId] = useState(params.get("endpoint_id") ?? "all");
+  const [eventId, setEventId] = useState(params.get("event_id") ?? "");
   const [search, setSearch] = useState("");
   const [offset, setOffset] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -52,6 +53,7 @@ export function DeliveriesPage() {
     q: debounced || undefined,
     status: statusList,
     endpoint_id: endpointId === "all" ? undefined : endpointId,
+    event_id: eventId || undefined,
   });
 
   // Keep deep links in sync with the visible filters.
@@ -59,10 +61,12 @@ export function DeliveriesPage() {
     const next = new URLSearchParams();
     if (status !== "all") next.set("status", status);
     if (endpointId !== "all") next.set("endpoint_id", endpointId);
+    if (eventId) next.set("event_id", eventId);
     setParams(next, { replace: true });
-  }, [status, endpointId, setParams]);
+  }, [status, endpointId, eventId, setParams]);
 
-  const hasFilters = status !== "all" || endpointId !== "all" || debounced.length > 0;
+  const hasFilters =
+    status !== "all" || endpointId !== "all" || eventId !== "" || debounced.length > 0;
 
   return (
     <>
@@ -129,6 +133,27 @@ export function DeliveriesPage() {
           </div>
         </div>
 
+        {eventId ? (
+          <div className="flex flex-wrap items-center gap-2 border-b border-line bg-surface-raised/[0.35] px-4 py-2">
+            <span className="text-2xs text-fg-muted">Filtered to event</span>
+            <code className="min-w-0 truncate font-mono text-2xs text-fg-subtle">
+              {eventId}
+            </code>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto"
+              onClick={() => {
+                setEventId("");
+                setOffset(0);
+              }}
+            >
+              <X aria-hidden="true" />
+              Clear event filter
+            </Button>
+          </div>
+        ) : null}
+
         {deliveries.isLoading ? (
           <LoadingState rows={8} cols={6} />
         ) : deliveries.error ? (
@@ -150,6 +175,7 @@ export function DeliveriesPage() {
                   onClick={() => {
                     setStatus("all");
                     setEndpointId("all");
+                    setEventId("");
                     setSearch("");
                     setOffset(0);
                   }}

@@ -105,7 +105,7 @@ export function App() {
           <Route path="/endpoints" element={<EndpointsPage />} />
           <Route path="/endpoints/:id" element={<EndpointDetailPage />} />
           <Route path="/dead-letter" element={<DeadLetterPage />} />
-          <Route path="/metrics" element={<MetricsPage />} />
+          <Route path="/observability" element={<MetricsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

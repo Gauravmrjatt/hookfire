@@ -62,6 +62,7 @@ export interface DeliveryParams {
   q?: string;
   status?: string[];
   endpoint_id?: string;
+  event_id?: string;
 }
 
 export function useStats(refetchInterval: number | false = 5_000) {
@@ -168,6 +169,7 @@ export function useDeliveries(params: DeliveryParams = {}) {
           q: params.q,
           status: params.status,
           endpoint_id: params.endpoint_id,
+          event_id: params.event_id,
         })}`,
       ),
     placeholderData: keepPreviousData,

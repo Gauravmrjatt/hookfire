@@ -235,7 +235,7 @@ export function SettingsPage() {
             <dl className="flex flex-col">
               {SHORTCUTS.map((shortcut) => (
                 <div
-                  key={shortcut.action}
+                  key={`${shortcut.action}:${shortcut.keys.join("+")}`}
                   className="flex items-center justify-between gap-4 border-b border-line py-2 last:border-0"
                 >
                   <dt className="text-2xs text-fg-muted">{shortcut.action}</dt>

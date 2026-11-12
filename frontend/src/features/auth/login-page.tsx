@@ -127,7 +127,7 @@ export function LoginPage() {
               </p>
             </div>
 
-            <form id="connect-form" onSubmit={connect} className="flex flex-col gap-5" noValidate>
+            <form id="connect-form" tabIndex={-1} onSubmit={connect} className="flex flex-col gap-5" noValidate>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="login-base-url">API base URL</Label>
                 <Input

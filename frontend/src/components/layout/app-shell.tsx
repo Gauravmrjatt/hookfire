@@ -80,7 +80,7 @@ export function AppShell() {
           onSendEvent={() => setSendOpen(true)}
         />
 
-        <main id="main-content" className="flex-1 px-4 py-8 md:px-8">
+        <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-8 md:px-8">
           <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8">
             <Outlet />
           </div>

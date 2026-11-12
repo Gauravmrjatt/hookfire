@@ -31,7 +31,7 @@ const LABELS: Record<string, string> = {
   "/deliveries": "Deliveries",
   "/endpoints": "Endpoints",
   "/dead-letter": "Dead letter",
-  "/metrics": "Metrics",
+  "/observability": "Metrics",
   "/settings": "Settings",
 };
 

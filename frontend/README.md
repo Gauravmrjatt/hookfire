@@ -83,6 +83,8 @@ location /v1/ {
 }
 
 location /metrics {
+    # Prometheus exposition. The dashboard's Metrics screen is /observability
+    # so this path can stay reserved for the engine.
     proxy_pass http://hookfire:8080;
 }
 ```
@@ -115,7 +117,7 @@ must not be cached long.
 | `/endpoints` | Endpoints | Registered subscribers as a card grid |
 | `/endpoints/:id` | Endpoint detail | Configuration, signing model, recent deliveries |
 | `/dead-letter` | Dead letter | Terminal failures with single and page replay |
-| `/metrics` | Metrics | Live session charts and the Prometheus instrument reference |
+| `/observability` | Metrics | Live session charts and the Prometheus instrument reference |
 | `/settings` | Settings | Base URL + token, connection test, shortcuts, local data |
 | `/login` | Connect | Token entry and validation |
 | `*` | 404 | Recovery path back to Activity |
@@ -182,6 +184,7 @@ The full acceptance criteria and QA checklist live in
 
 ## Limits and behaviour worth knowing
 
+- **`/metrics` is the engine's, not the dashboard's.** The raw Prometheus endpoint keeps that path, so the Metrics screen lives at `/observability`. Do not add a UI route at `/metrics`; deep links would be proxied to the engine.
 - **At-least-once.** Duplicate deliveries are expected; subscribers should deduplicate on `X-Webhook-ID`.
 - **Charts are session-local.** Counters come from `/v1/stats`; reloading starts a new window. Prometheus owns history.
 - **Relative time needs a clock.** `RelativeTime` re-renders every 15 s; tab-clock drift is corrected on the next tick.

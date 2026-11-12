@@ -23,7 +23,7 @@ export function titleForPath(pathname: string) {
   if (pathname === "/endpoints") return "Endpoints";
   if (pathname.startsWith("/endpoints/")) return "Endpoint detail";
   if (pathname === "/dead-letter") return "Dead letter";
-  if (pathname === "/metrics") return "Metrics";
+  if (pathname === "/observability") return "Metrics";
   if (pathname === "/settings") return "Settings";
   return "Page not found";
 }

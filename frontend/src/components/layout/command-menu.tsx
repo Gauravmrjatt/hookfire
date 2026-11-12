@@ -70,7 +70,7 @@ export function CommandMenu({
             <Inbox aria-hidden="true" />
             Dead letter
           </CommandItem>
-          <CommandItem onSelect={() => run(() => navigate("/metrics"))}>
+          <CommandItem onSelect={() => run(() => navigate("/observability"))}>
             <ChartColumn aria-hidden="true" />
             Metrics
           </CommandItem>

@@ -42,7 +42,7 @@ export function NavContent({ onNavigate }: { onNavigate?: () => void }) {
       icon: Inbox,
       badge: stats?.dead_letter_count,
     },
-    { to: "/metrics", label: "Metrics", icon: ChartColumn },
+    { to: "/observability", label: "Metrics", icon: ChartColumn },
   ];
 
   return (
