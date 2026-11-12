@@ -37,7 +37,7 @@ export function DropdownMenuItem({
     <DropdownMenuPrimitive.Item
       className={cn(
         "relative flex cursor-default select-none items-center gap-3 rounded-xs px-3 py-2 text-xs text-fg outline-none",
-        "transition-colors duration-[85ms] focus:bg-surface-strong data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
+        "transition-colors duration-[85ms] focus:bg-surface-strong data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         "[&_svg]:size-[14px] [&_svg]:text-fg-muted",
         inset && "pl-8",
         className,

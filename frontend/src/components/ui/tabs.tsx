@@ -30,7 +30,7 @@ export function TabsTrigger({
         "focus-ring inline-flex h-[24px] items-center gap-2 rounded-xs px-3 text-2xs font-medium text-fg-muted",
         "transition-colors duration-[120ms] hover:text-fg",
         "data-[state=active]:bg-surface-strong data-[state=active]:text-fg",
-        "disabled:pointer-events-none disabled:opacity-45",
+        "disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
       {...props}

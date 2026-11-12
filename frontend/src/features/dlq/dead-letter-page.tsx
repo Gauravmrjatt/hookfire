@@ -72,7 +72,7 @@ export function DeadLetterPage() {
               <RotateCcw aria-hidden="true" />
               Replay page
             </Button>
-            <Button onClick={openSendEventDialog}>Send event</Button>
+            <Button variant="primary" onClick={openSendEventDialog}>Send event</Button>
           </>
         }
       />

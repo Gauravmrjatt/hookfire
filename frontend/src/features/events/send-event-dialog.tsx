@@ -191,7 +191,7 @@ export function SendEventDialog({
             >
               Cancel
             </Button>
-            <Button type="submit" loading={createEvent.isPending}>
+            <Button type="submit" variant="primary" loading={createEvent.isPending}>
               <Send aria-hidden="true" />
               Send event
             </Button>

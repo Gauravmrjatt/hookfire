@@ -57,7 +57,7 @@ export function ConfirmDialog({
             Cancel
           </Button>
           <Button
-            variant={destructive ? "danger" : "default"}
+            variant={destructive ? "danger" : "primary"}
             onClick={confirm}
             loading={pending}
           >

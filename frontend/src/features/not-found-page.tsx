@@ -18,7 +18,7 @@ export function NotFoundPage() {
         is always available from Activity.
       </p>
       <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-        <Button asChild>
+        <Button variant="primary" asChild>
           <Link to="/">
             <ArrowLeft aria-hidden="true" />
             Back to Activity

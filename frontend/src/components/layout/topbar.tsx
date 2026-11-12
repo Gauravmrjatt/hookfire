@@ -98,7 +98,7 @@ export function Topbar({
           <RefreshCw aria-hidden="true" />
         </Button>
 
-        <Button size="sm" onClick={onSendEvent} className="gap-2">
+        <Button size="sm" onClick={onSendEvent}>
           <Plus aria-hidden="true" />
           Send event
         </Button>

@@ -182,7 +182,6 @@ export function LoginPage() {
 
               <Button
                 type="submit"
-                size="lg"
                 loading={probe.kind === "testing"}
                 className="w-full"
               >

@@ -40,7 +40,7 @@ export function EndpointsPage() {
         title="Endpoints"
         description="Registered subscribers. Each accepted event fans out one delivery per active endpoint, signed with that endpoint's secret and paced by its rate limit."
         actions={
-          <Button onClick={() => setCreateOpen(true)}>
+          <Button variant="primary" onClick={() => setCreateOpen(true)}>
             <Plus aria-hidden="true" />
             Register endpoint
           </Button>
@@ -63,7 +63,7 @@ export function EndpointsPage() {
             description="An endpoint is the destination for events. Register one, then send an event and watch the delivery appear in Activity."
             action={
               <div className="flex flex-wrap items-center justify-center gap-2">
-                <Button size="sm" onClick={() => setCreateOpen(true)}>
+                <Button variant="primary" size="sm" onClick={() => setCreateOpen(true)}>
                   <Plus aria-hidden="true" />
                   Register endpoint
                 </Button>

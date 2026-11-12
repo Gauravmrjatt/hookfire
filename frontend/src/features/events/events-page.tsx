@@ -83,7 +83,7 @@ export function EventsPage() {
         title="Events"
         description="Accepted events, newest first. Each row was committed with its fan-out plan in a single transaction — an event is never acknowledged before it is durable."
         actions={
-          <Button onClick={openSendEventDialog}>
+          <Button variant="primary" onClick={openSendEventDialog}>
             <Plus aria-hidden="true" />
             Send event
           </Button>
@@ -128,7 +128,7 @@ export function EventsPage() {
                   Clear search
                 </Button>
               ) : (
-                <Button size="sm" onClick={openSendEventDialog}>
+                <Button variant="primary" size="sm" onClick={openSendEventDialog}>
                   <Plus aria-hidden="true" />
                   Send an event
                 </Button>

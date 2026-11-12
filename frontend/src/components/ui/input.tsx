@@ -26,11 +26,10 @@ export const Input = React.forwardRef<
     ref={ref}
     type={type}
     className={cn(
-      "focus-ring h-[32px] w-full rounded-xs border border-line-strong bg-surface px-4 text-xs text-fg",
+      "field-control h-[32px] w-full rounded-xs px-4 text-xs text-fg",
       "placeholder:text-fg-muted",
-      "transition-colors duration-[120ms] hover:bg-surface-raised/30",
-      "disabled:cursor-not-allowed disabled:opacity-45",
-      "aria-invalid:border-danger/60 aria-invalid:hover:border-danger/60",
+      "transition-[background-color,box-shadow,outline-color] duration-[120ms]",
+      "disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}
@@ -45,11 +44,10 @@ export const Textarea = React.forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "focus-ring w-full resize-y rounded-xs border border-line-strong bg-surface px-4 py-4 font-mono text-2xs leading-[18px] text-fg",
+      "field-control w-full resize-y rounded-xs px-4 py-4 font-mono text-2xs leading-[18px] text-fg",
       "placeholder:text-fg-muted",
-      "transition-colors duration-[120ms] hover:bg-surface-raised/30",
-      "disabled:cursor-not-allowed disabled:opacity-45",
-      "aria-invalid:border-danger/60",
+      "transition-[background-color,box-shadow,outline-color] duration-[120ms]",
+      "disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}

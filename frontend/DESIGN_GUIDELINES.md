@@ -110,8 +110,8 @@ Every token below is implemented in `src/index.css`. Components must use these n
 | `surface-raised` | `--surface-raised` | `bg-surface-raised` | Dialogs, menus, toasts, badges | Full-page backgrounds |
 | `surface-raised/35` | — | `bg-surface-raised/[0.35]` | Card fill over the canvas | Interactive targets |
 | `surface-strong` | `--surface-strong` | `bg-surface-strong` | Hover fill, selected nav, switch track | Page canvas |
-| `surface-inverse` | `--surface-muted` | `bg-surface-inverse` | High-emphasis primary button | Large areas |
-| `control` | `--control-base` | `bg-control` | Neutral control fill (buttons, icon actions, quiet toolbars) | Page canvas |
+| `surface-inverse` | `--surface-muted` | `bg-surface-inverse` | `primary` (white) button fill | Large areas |
+| `control` | `--control-base` | `bg-control` | `default` (neutral) button fill, icon actions, quiet toolbars, field hover wash | Page canvas |
 | `control-hover` | `--control-hover` | `bg-control-hover` | Hover fill for `control` | Default state |
 | `control-active` | `--control-active` | `bg-control-active` | Pressed/expanded fill for `control` | Hover state |
 | `fg` | `--text-primary` | `text-fg` | Primary text, values, titles | Metadata you want de-emphasised |
@@ -119,7 +119,7 @@ Every token below is implemented in `src/index.css`. Components must use these n
 | `fg-subtle` | `--text-tertiary` | `text-fg-subtle` | Secondary text on `surface-raised`; mono ids; JSON | Body copy |
 | `accent-ink` | `--text-inverse` | `text-accent-ink` | Links, active filter text, accent icons | Static emphasis |
 | `line` | `--line-subtle` | `border-line` | Decorative separators, card borders, table rules | The only boundary of a control |
-| `line-strong` | `--line-strong` | `border-line-strong` | Control boundaries (inputs, selects, outline buttons) | Decorative separators |
+| `line-strong` | `--line-strong` | `border-line-strong` | `outline` button boundaries, switch hairlines | Text fields (use `shadow-1`), decorative separators |
 | `focus` | `--focus-ring` | `outline-focus` / `.focus-ring` | Focus indicators | Text color |
 | `success` | `--status-success` | `text-success`, `bg-success/10` | Delivered, online, healthy | Anything not a positive outcome |
 | `warning` | `--status-warning` | `text-warning` | Retrying, near-limit | Errors |
@@ -220,14 +220,14 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 
 - **Radius:** `6px` everywhere — controls, cards, dialogs, sheets, badges, popovers. No second radius. Icon buttons are also 6 px; circles are permitted only for status dots, avatars, and the switch thumb.
 - **Elevation:** exactly one shadow, `shadow-1`, used only for floating layers (dialog, sheet, menu, popover, tooltip, toast, switch thumb). **Must not** be used on cards, tables, or hover states.
-- **Borders:** 1 px. `border-line` for structure, `border-line-strong` for interactive boundaries. **Must not** combine a strong border with a shadow on the same control.
+- **Borders:** 1 px `border-line` for structure; 1 px `border-line-strong` for `outline` buttons and switch tracks. Text fields and selects have **no** border — their boundary is the 0.5 px hairline inside `shadow-1`. **Must not** combine a border and `shadow-1` on the same box; that draws two visible edges.
 
 ### 2.9 Motion
 
 | Token | Duration | Class | Use |
 |---|---|---|---|
 | `instant` | 85 ms | `duration-[85ms]` | Hover/active on rows, menu items, icon buttons |
-| `fast` | 120 ms | `duration-[120ms]` | Colour/border transitions on inputs, buttons, tabs, switch |
+| `fast` | 120 ms | `duration-[120ms]` | Fill and shadow transitions on inputs, buttons, tabs, switch |
 | `normal` | 150 ms | `duration-[150ms]` | Dialog enter/exit, card border transition |
 | `slow` | 200 ms | `duration-[200ms]` | Sheet slide, chart width changes |
 
@@ -240,6 +240,7 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 
 - **Must** show a 2 px `focus` outline with a 2 px offset on every focusable element. The global `:focus-visible` rule guarantees this even for elements that forget the utility.
 - **Must** use the `.focus-ring` treatment (2 px surface gap + 2 px accent ring) inside dense rows, menus, and dark overlays where an outline could be clipped by `overflow: hidden`.
+- **Must** use the 1 px inset accent outline (`outline-offset: -1px`) on text fields, textareas, and selects, so the indicator reads as the control's own boundary instead of an external ring; the field's hairline elevation is removed while focused.
 - **Must not** set `outline: none` without replacing it with an equally visible indicator.
 - **Must** keep the indicator visible against both `surface` and `surface-raised`.
 - **Should** use `focus-visible` semantics so pointer clicks do not flash a ring, while keyboard focus always does.
@@ -280,30 +281,32 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.1 Button
 
-**Anatomy:** optional leading icon (16 px) · label (13 px, medium) · optional trailing icon. Gap `gap-2`, horizontal padding `px-8` (15 px) at 32/40 px and `px-6` (11 px) at 28 px, height `h-[32px]`, radius 6 px.
+**Anatomy:** optional leading icon (16 px) · label (13 px, `medium`) · optional trailing icon. Gap 6 px (`gap-3`), radius 6 px. Horizontal padding is `px-8` (15 px) at 32/40 px and `px-6` (11 px) at 28 px. Text is 13 px at **every** size; only the box grows.
 
 **Variants**
 
 | Variant | Fill | Border | Text | Use |
 |---|---|---|---|---|
-| `default` | `surface-inverse` (white) | none | `primary-foreground` (black) | The single primary action on a screen |
-| `secondary` | `control` (6% white) + `shadow-1` | none (the shadow supplies the hairline) | `fg` | Secondary action inside a dense surface |
+| `default` | `control` (6% white) + `shadow-1` | none (the shadow supplies the hairline) | `fg` | Standard action: toolbar, dialog cancel, filters, Connect. The console baseline |
+| `primary` | `surface-inverse` (white) | none | `primary-foreground` (black) | The single high-emphasis action on a screen |
 | `outline` | transparent | `line-strong` | `fg` | Toolbar and row actions that need a boundary |
 | `ghost` | transparent | none | `fg-muted` → `fg` on hover | Icon actions, tertiary navigation |
 | `danger` | `danger/10` | `danger/30` | `danger` | Destructive confirmation only |
 | `link` | transparent | none | `accent-ink` | Inline navigation inside prose |
 
-**Sizes:** `sm` 28 px/11 px text/`px-6` · `default` 32 px/13 px/`px-8` · `lg` 40 px/15 px/`px-8` · `icon` 32×32 · `icon-sm` 28×28.
+`default` is the neutral control used everywhere a button is not the page's headline action. `primary` is the white brand CTA and is capped at one per viewport.
+
+**Sizes:** `sm` 28 px / `px-6` · `default` 32 px / `px-8` · `lg` 40 px / `px-8` · `icon` 32×32 · `icon-sm` 28×28. All sizes render 13 px text with a 20 px line box.
 
 **States**
 
 | State | Visual | Behaviour |
 |---|---|---|
 | Default | As variant | — |
-| Hover | `default`: white at 90%; `secondary`/`outline`/`ghost`: `control-hover` | Pointer only; duration 120 ms |
-| Focus-visible | `.focus-ring` (2 px offset ring) | Always visible, including on dark cards |
-| Active | `control-active` (or one further surface step); no transform | Must not shift layout |
-| Disabled | `opacity-45`, `pointer-events-none` | Keep the label readable; add a tooltip explaining why when the reason is not obvious |
+| Hover | `default`/`outline`/`ghost`: `control-hover`; `primary`: white at 90%; `danger`: `danger/20` | Pointer only; duration 120 ms |
+| Focus-visible | `.focus-ring` (2 px surface gap + 2 px accent ring) | Always visible, including on dark cards and next to `shadow-1` |
+| Active | `control-active` (16% white) for neutral variants; `primary` at 80% white; no transform | Must not shift layout |
+| Disabled | `opacity-50`, `pointer-events-none` | Keep the label readable; add a tooltip explaining why when the reason is not obvious |
 | Loading | Spinner replaces nothing — it is prepended, label stays, `aria-busy="true"`, `sr-only` "Working" | Button is disabled while pending; width must not jump |
 | Error | Buttons do not own error state; the mutation surfaces a toast and the form surfaces a `FieldError` | Never colour a button red after a failed request |
 
@@ -338,17 +341,19 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.3 Text input and textarea
 
-**Anatomy:** label (13 px, `fg`, weight 530) · control (32 px, `surface` fill, 1 px `line-strong`, radius 6 px, `px-4`) · optional help text (11 px) · optional error (11 px, `danger`, `role="alert"`).
+**Anatomy:** label (13 px, `fg`, weight 530, 8 px above the control) · control (32 px, `surface` fill, **no border**, `shadow-1` hairline, radius 6 px, `px-4`) · optional help text (11 px) · optional error (11 px, `danger`, `role="alert"`). The box is the `.field-control` class in `src/index.css`; the same box is used by textarea and select.
 
 | State | Visual |
 |---|---|
-| Default | `bg-surface`, `border-line-strong`, placeholder `fg-muted` |
-| Hover | `bg-surface-raised/30` (boundary stays ≥ 3:1) |
-| Focus-visible | `.focus-ring` + border keeps `line-strong` |
+| Default | `bg-surface` + `shadow-1`; placeholder `fg-muted` |
+| Hover | `control` wash (6% white); the hairline shadow stays |
+| Focus-visible | 1 px inset `focus` outline (`outline-offset: -1px`); the shadow is removed so the accent line is the only boundary |
 | Active | Not distinct from focus |
-| Disabled | `opacity-45`, `cursor-not-allowed` |
+| Disabled | `opacity-50`, `cursor-not-allowed`; no hover wash |
 | Loading | Not applicable — disable the form while its mutation is pending |
-| Error | `aria-invalid="true"`, border `danger/60`, `FieldError` linked via `aria-describedby` |
+| Error | `aria-invalid="true"`, 1 px inset `danger` outline, `FieldError` linked via `aria-describedby` |
+
+**Border rule:** never add `border-line-strong` to a field. The boundary is the 0.5 px white hairline in `shadow-1`; a border plus the shadow draws two edges and reads as a focused state.
 
 **Keyboard:** `Tab` in, native text editing, `Enter` submits only a single-line field inside a form; `Escape` closes the surrounding dialog.
 **Pointer:** label and control are separate; clicking the label focuses the control (`htmlFor`).
@@ -381,7 +386,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 | Hover | Track lightens one step |
 | Focus-visible | `.focus-ring` |
 | Active | Thumb moves on `fast` (120 ms) |
-| Disabled | `opacity-45`, `cursor-not-allowed` |
+| Disabled | `opacity-50`, `cursor-not-allowed` |
 | Loading | Not applicable; optimistic toggles `must` revert and toast on failure |
 | Error | Revert the toggle and surface a toast; do not leave the switch lying |
 
@@ -482,7 +487,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 | Hover | Item fill `surface-strong` |
 | Focus-visible | Item fill `surface-strong`; the palette input keeps the ring |
 | Active | Item activates on `Enter` |
-| Disabled | `opacity-45`, `pointer-events-none`; keep the label visible |
+| Disabled | `opacity-50`, `pointer-events-none`; keep the label visible |
 | Loading | Search results are local; if remote results are added, show a single "Searching…" row, never a spinner that shifts layout |
 | Error | A failed action closes the menu and surfaces a toast |
 
@@ -699,7 +704,7 @@ Concise, confident, implementation-focused. The UI speaks like a senior engineer
 - Light mode, gradients, glassmorphism, glows, or decorative illustrations.
 - Shadows on cards, tables, or hover states.
 - Status colour as a full-card background or as the only difference between two states.
-- More than one primary (white) button in a viewport.
+- More than one `primary` (white) button in a viewport.
 - Uppercase labels, letter-spacing on body text, or centered body paragraphs.
 
 ### 6.2 Prohibited — interaction
@@ -738,7 +743,8 @@ Concise, confident, implementation-focused. The UI speaks like a senior engineer
 |---|---|---|
 | Status colour tokens | Delivery states cannot be expressed with four neutrals and one blue | Defined once in `index.css`; never re-derived per feature |
 | `2xs` 11 px step | Dense tables and badges need a metadata step below 13 px | Labels and metadata only; never paragraphs; ≥ 4.5:1 on its surface |
-| `line-strong` at 38% white | 16% failed 3:1 for control boundaries | Used only for interactive boundaries; decorative separators stay at 8% |
+| `line-strong` at 38% white | 16% failed 3:1 for control boundaries | Used only on `outline` buttons and switch tracks; fields use the `shadow-1` hairline, decorative separators stay at 8% |
+| Inset 1 px field focus | The field boundary is a hairline, so an offset ring would sit on neighbouring labels and rows | Text fields, textareas, and selects only; every other control uses the 2 px offset ring |
 | Circle radii | Status dots, avatars, switch thumb | Never on a rectangular control |
 
 ---

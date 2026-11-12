@@ -182,15 +182,40 @@
   }
 }
 
-@layer components {
-  /* Shared focus treatment for components that use a ring rather than the
-     native outline. Included in Button, links, rows, and menu items. */
-  .focus-ring:focus-visible {
-    outline: none;
-    box-shadow:
-      0 0 0 2px var(--surface-base),
-      0 0 0 4px var(--focus-ring);
-  }
+/* Shared focus treatment for components that use a ring rather than the
+   native outline. Kept unlayered so it wins over utility shadows such as
+   `shadow-1` on the neutral button. Included in Button, links, rows, and
+   menu items. */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-base),
+    0 0 0 4px var(--focus-ring);
+}
+
+/* Console field box: no hard border, a 0.5px hairline elevation, a 6% hover
+   wash, and a 1px accent outline drawn inside the box on focus. */
+.field-control {
+  border: 0;
+  background: var(--surface-base);
+  box-shadow: var(--shadow-1);
+}
+
+.field-control:hover:not(:disabled):not([aria-invalid="true"]):not(:focus-visible) {
+  background: var(--control-base);
+}
+
+.field-control:focus-visible {
+  outline: 1px solid var(--focus-ring);
+  outline-offset: -1px;
+  box-shadow: none;
+  background: var(--surface-base);
+}
+
+.field-control[aria-invalid="true"] {
+  outline: 1px solid var(--status-danger);
+  outline-offset: -1px;
+  box-shadow: none;
 }
 
 @keyframes hf-shimmer {

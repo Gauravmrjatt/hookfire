@@ -111,7 +111,7 @@ export function ActivityPage() {
             <Button variant="outline" onClick={() => void deliveries.refetch()}>
               Refresh
             </Button>
-            <Button onClick={openSendEventDialog}>
+            <Button variant="primary" onClick={openSendEventDialog}>
               <Plus aria-hidden="true" />
               Send event
             </Button>
@@ -227,7 +227,7 @@ export function ActivityPage() {
                   Clear filters
                 </Button>
               ) : (
-                <Button size="sm" onClick={openSendEventDialog}>
+                <Button variant="primary" size="sm" onClick={openSendEventDialog}>
                   <Plus aria-hidden="true" />
                   Send your first event
                 </Button>

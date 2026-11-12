@@ -12,7 +12,7 @@ export const Switch = React.forwardRef<
     className={cn(
       "focus-ring peer inline-flex h-[20px] w-[34px] shrink-0 cursor-pointer items-center rounded-full border border-line-strong",
       "transition-colors duration-[120ms] data-[state=checked]:bg-accent-ink data-[state=unchecked]:bg-surface-strong",
-      "disabled:cursor-not-allowed disabled:opacity-45",
+      "disabled:cursor-not-allowed disabled:opacity-50",
       className,
     )}
     {...props}

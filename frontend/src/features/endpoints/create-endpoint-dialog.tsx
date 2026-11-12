@@ -171,7 +171,7 @@ export function CreateEndpointDialog({
                 <Plus aria-hidden="true" />
                 Register another
               </Button>
-              <Button onClick={() => onOpenChange(false)}>Done</Button>
+              <Button variant="primary" onClick={() => onOpenChange(false)}>Done</Button>
             </DialogFooter>
           </>
         ) : (
@@ -254,7 +254,7 @@ export function CreateEndpointDialog({
                 >
                   Cancel
                 </Button>
-                <Button type="submit" loading={createEndpoint.isPending}>
+                <Button type="submit" variant="primary" loading={createEndpoint.isPending}>
                   Register endpoint
                 </Button>
               </DialogFooter>

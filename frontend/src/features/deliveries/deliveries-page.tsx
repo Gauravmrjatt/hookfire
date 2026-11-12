@@ -74,7 +74,7 @@ export function DeliveriesPage() {
         title="Deliveries"
         description="One row per event × endpoint. Retry schedules are durable: a delivery in Retrying has a persisted next attempt time, not an in-memory timer."
         actions={
-          <Button onClick={openSendEventDialog}>
+          <Button variant="primary" onClick={openSendEventDialog}>
             <Plus aria-hidden="true" />
             Send event
           </Button>
@@ -183,7 +183,7 @@ export function DeliveriesPage() {
                   Clear filters
                 </Button>
               ) : (
-                <Button size="sm" onClick={openSendEventDialog}>
+                <Button variant="primary" size="sm" onClick={openSendEventDialog}>
                   <Plus aria-hidden="true" />
                   Send an event
                 </Button>

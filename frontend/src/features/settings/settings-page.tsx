@@ -176,7 +176,7 @@ export function SettingsPage() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Button type="submit" disabled={!dirty && !error}>
+                <Button type="submit" variant="primary" disabled={!dirty && !error}>
                   Save and reconnect
                 </Button>
                 <Button

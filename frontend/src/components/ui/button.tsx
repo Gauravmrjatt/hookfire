@@ -6,14 +6,14 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "focus-ring inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-xs font-medium transition-[background-color,color,border-color,box-shadow] duration-[120ms] disabled:pointer-events-none disabled:opacity-45 [&_svg]:size-[16px] [&_svg]:shrink-0",
+  "focus-ring inline-flex select-none items-center justify-center gap-3 whitespace-nowrap rounded-xs font-medium transition-[background-color,color,border-color,box-shadow] duration-[120ms] disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-[16px] [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
-        secondary:
           "bg-control text-fg shadow-1 hover:bg-control-hover active:bg-control-active",
+        primary:
+          "bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/80",
         outline:
           "border border-line-strong bg-transparent text-fg hover:bg-control active:bg-control-active",
         ghost:
@@ -23,9 +23,9 @@ const buttonVariants = cva(
         link: "h-auto bg-transparent p-0 text-accent-ink underline-offset-4 hover:underline",
       },
       size: {
-        sm: "h-[28px] px-6 text-2xs",
+        sm: "h-[28px] px-6 text-xs",
         default: "h-[32px] px-8 text-xs",
-        lg: "h-[40px] px-8 text-sm",
+        lg: "h-[40px] px-8 text-xs",
         icon: "size-[32px] p-0",
         "icon-sm": "size-[28px] p-0",
       },
