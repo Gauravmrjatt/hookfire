@@ -452,6 +452,7 @@ migrations/     versioned SQL, applied transactionally at boot
 tests/integration/  end-to-end: ingest · concurrent idempotency · retry · DLQ · replay · rate limit
 deployments/    docker assets · kubernetes manifests
 docs/           architecture · api · scaling · reliability
+frontend/       Activity operator console (React 19 · Vite · Tailwind v4 · TanStack Query)
 ```
 
 *(This mirrors the classic Node.js express layout: `routes/` ≈ router,
@@ -473,6 +474,26 @@ make test-integration         # full end-to-end suite
 
 TOKEN=$(make token JWT_SECRET=change-me | tail -1)
 ```
+
+### Dashboard (frontend)
+
+A React 19 + TypeScript operator console lives in [`frontend/`](frontend/README.md):
+a live delivery feed, event and delivery explorers, endpoint management, a
+dead-letter queue with replay, runtime metrics, and connection settings.
+
+```bash
+cd frontend
+bun install
+bun run dev        # http://localhost:5173 (proxies /v1 to :8080)
+```
+
+Paste a JWT minted with `make token` on the connect screen. The dashboard is a
+static SPA (`bun run build` → `dist/`); in production serve it and `/v1` from
+one origin behind a reverse proxy. For split-origin setups, add the dashboard
+origin to `CORS_ALLOWED_ORIGINS`.
+
+Design rules, component states, and the WCAG 2.2 AA acceptance criteria are in
+[`frontend/DESIGN_GUIDELINES.md`](frontend/DESIGN_GUIDELINES.md).
 
 All configuration is env-driven — see [.env.example](.env.example) for the
 full annotated list (`WORKER_COUNT`, `QUEUE_SIZE`, `MAX_RETRIES`,

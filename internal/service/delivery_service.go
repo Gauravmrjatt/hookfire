@@ -64,6 +64,25 @@ func (s *DeliveryService) ListDeadLetter(ctx context.Context, limit, offset int)
 	return s.delivs.ListDeadLetter(ctx, limit, offset)
 }
 
+// List returns a page of deliveries for the dashboard feed.
+func (s *DeliveryService) List(ctx context.Context, f repository.DeliveryFilter) (Page[model.DeliveryRow], error) {
+	limit, offset, err := normalizePage(f.Limit, f.Offset)
+	if err != nil {
+		return Page[model.DeliveryRow]{}, err
+	}
+	for _, st := range f.Statuses {
+		if !validStatus(st) {
+			return Page[model.DeliveryRow]{}, fmt.Errorf("%w: unknown delivery status %q", ErrValidation, st)
+		}
+	}
+	f.Limit, f.Offset = limit, offset
+	items, total, err := s.delivs.ListFeed(ctx, f)
+	if err != nil {
+		return Page[model.DeliveryRow]{}, err
+	}
+	return Page[model.DeliveryRow]{Items: items, Total: total, Limit: limit, Offset: offset}, nil
+}
+
 // Replay resets a dead-lettered delivery to pending. Does not create a new
 // event — the original event id is preserved (PRD §20).
 func (s *DeliveryService) Replay(ctx context.Context, id string) (model.Delivery, error) {

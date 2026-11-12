@@ -3,8 +3,10 @@ package handler
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"hookfire/internal/model"
+	"hookfire/internal/repository"
 	"hookfire/internal/service"
 	"hookfire/pkg/response"
 )
@@ -31,6 +33,39 @@ func (h *DeliveriesHandler) DeadLetter(w http.ResponseWriter, r *http.Request) {
 		items = []model.Delivery{}
 	}
 	response.JSON(w, http.StatusOK, map[string]any{"items": items})
+}
+
+// List implements GET /v1/deliveries — the dashboard delivery explorer.
+func (h *DeliveriesHandler) List(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	page, err := h.svc.List(r.Context(), repository.DeliveryFilter{
+		Limit:      queryInt(r, "limit", 25, 200),
+		Offset:     queryInt(r, "offset", 0, 1_000_000_000),
+		Statuses:   splitCSV(q.Get("status")),
+		EndpointID: q.Get("endpoint_id"),
+		EventID:    q.Get("event_id"),
+		Query:      q.Get("q"),
+	})
+	if err != nil {
+		writeServiceError(w, h.log, err)
+		return
+	}
+	response.JSON(w, http.StatusOK, page)
+}
+
+// splitCSV turns "pending,retrying" into a validated-by-service status list.
+func splitCSV(v string) []string {
+	if strings.TrimSpace(v) == "" {
+		return nil
+	}
+	parts := strings.Split(v, ",")
+	out := make([]string, 0, len(parts))
+	for _, p := range parts {
+		if p = strings.TrimSpace(p); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
 }
 
 // Replay implements POST /v1/deliveries/{id}/replay (PRD §20).

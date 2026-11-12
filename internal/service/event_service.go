@@ -150,6 +150,21 @@ func (s *EventService) Get(ctx context.Context, id string) (model.Event, error) 
 	return ev, err
 }
 
+// List returns a page of events with fan-out counters for the dashboard feed.
+func (s *EventService) List(ctx context.Context, limit, offset int, eventType, query string) (Page[model.EventSummary], error) {
+	limit, offset, err := normalizePage(limit, offset)
+	if err != nil {
+		return Page[model.EventSummary]{}, err
+	}
+	items, total, err := s.db.ListFeed(ctx, repository.EventFilter{
+		Limit: limit, Offset: offset, EventType: eventType, Query: query,
+	})
+	if err != nil {
+		return Page[model.EventSummary]{}, err
+	}
+	return Page[model.EventSummary]{Items: items, Total: total, Limit: limit, Offset: offset}, nil
+}
+
 func isValidJSON(b []byte) bool {
 	var v any
 	return json.Unmarshal(b, &v) == nil

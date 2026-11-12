@@ -15,6 +15,9 @@ type Config struct {
 	// HTTP server
 	HTTPAddr string // PORT
 	Env      string
+	// CORSAllowedOrigins is the dashboard origin allowlist. The Vite dev
+	// server defaults are included so `npm run dev` works out of the box.
+	CORSAllowedOrigins []string
 
 	// Backing services
 	DatabaseURL string // required; the API must fail rather than accept events it cannot persist
@@ -70,6 +73,7 @@ func Load() (Config, error) {
 
 	c.HTTPAddr = envOr("PORT", "0.0.0.0:8080")
 	c.Env = envOr("ENV", "development")
+	c.CORSAllowedOrigins = splitStringList(envOr("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"))
 
 	c.DatabaseURL = os.Getenv("DATABASE_URL")
 	c.RedisURL = os.Getenv("REDIS_URL")
@@ -220,6 +224,21 @@ func envDurationOr(key, def string) (time.Duration, error) {
 		return 0, fmt.Errorf("%s: invalid duration %q", key, v)
 	}
 	return d, nil
+}
+
+// splitStringList parses a comma-separated env value into a trimmed slice.
+func splitStringList(s string) []string {
+	if strings.TrimSpace(s) == "" {
+		return nil
+	}
+	parts := strings.Split(s, ",")
+	out := make([]string, 0, len(parts))
+	for _, p := range parts {
+		if p = strings.TrimSpace(p); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
 }
 
 func splitIntList(s string) ([]int, error) {

@@ -44,6 +44,21 @@ func (h *EventsHandler) Create(w http.ResponseWriter, r *http.Request) {
 	response.JSON(w, http.StatusOK, accepted.Event)
 }
 
+// List implements GET /v1/events — newest first, paginated, with fan-out
+// counters for the dashboard activity feed.
+func (h *EventsHandler) List(w http.ResponseWriter, r *http.Request) {
+	page, err := h.svc.List(r.Context(),
+		queryInt(r, "limit", 25, 200),
+		queryInt(r, "offset", 0, 1_000_000_000),
+		r.URL.Query().Get("event_type"),
+		r.URL.Query().Get("q"))
+	if err != nil {
+		writeServiceError(w, h.log, err)
+		return
+	}
+	response.JSON(w, http.StatusOK, page)
+}
+
 func (h *EventsHandler) Get(w http.ResponseWriter, r *http.Request) {
 	ev, err := h.svc.Get(r.Context(), r.PathValue("id"))
 	if err != nil {

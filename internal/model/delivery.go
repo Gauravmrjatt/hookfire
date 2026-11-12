@@ -37,6 +37,15 @@ type Delivery struct {
 	UpdatedAt     time.Time  `json:"updated_at"`
 }
 
+// DeliveryRow is a delivery joined with the display fields the dashboard
+// needs (event type + endpoint label) — never the endpoint secret.
+type DeliveryRow struct {
+	Delivery
+	EventType    string `json:"event_type"`
+	EndpointName string `json:"endpoint_name"`
+	EndpointURL  string `json:"endpoint_url"`
+}
+
 // DeliveryWithEvent is a delivery joined with its event and endpoint —
 // everything a worker needs to perform an HTTP attempt. Produced by the
 // batch claimer (SELECT ... FOR UPDATE SKIP LOCKED).

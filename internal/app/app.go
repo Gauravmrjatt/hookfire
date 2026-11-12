@@ -90,6 +90,7 @@ func New(ctx context.Context, cfg config.Config) (*App, error) {
 	// Handlers + router
 	router := routes.New(routes.Deps{
 		MaxBodyBytes: cfg.MaxRequestBodyBytes,
+		CORSOrigins:  cfg.CORSAllowedOrigins,
 		Endpoints:    handler.NewEndpointsHandler(endpointSvc, log),
 		Events:       handler.NewEventsHandler(eventSvc, deliverySvc, log),
 		Deliveries:   handler.NewDeliveriesHandler(deliverySvc, log),

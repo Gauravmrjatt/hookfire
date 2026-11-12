@@ -15,6 +15,7 @@ import (
 // Deps is everything the router needs.
 type Deps struct {
 	MaxBodyBytes int64
+	CORSOrigins  []string
 	Endpoints    *handler.EndpointsHandler
 	Events       *handler.EventsHandler
 	Deliveries   *handler.DeliveriesHandler
@@ -36,9 +37,11 @@ func New(d Deps) http.Handler {
 	api.HandleFunc("DELETE /endpoints/{id}", d.Endpoints.Delete)
 
 	api.HandleFunc("POST /events", d.Events.Create)
+	api.HandleFunc("GET /events", d.Events.List)
 	api.HandleFunc("GET /events/{id}", d.Events.Get)
 	api.HandleFunc("GET /events/{id}/deliveries", d.Events.EventDeliveries)
 
+	api.HandleFunc("GET /deliveries", d.Deliveries.List)
 	api.HandleFunc("GET /deliveries/dead-letter", d.Deliveries.DeadLetter)
 	api.HandleFunc("GET /deliveries/{id}", d.Deliveries.Delivery)
 	api.HandleFunc("POST /deliveries/{id}/replay", d.Deliveries.Replay)
@@ -56,7 +59,12 @@ func New(d Deps) http.Handler {
 	protected := d.Auth.Wrap(bodyLimit(d.MaxBodyBytes, api))
 	root.Handle("/v1/", http.StripPrefix("/v1", protected))
 
-	return root
+	// CORS wraps everything so browser preflights are answered before routing.
+	var out http.Handler = root
+	if len(d.CORSOrigins) > 0 {
+		out = middleware.CORS(d.CORSOrigins)(root)
+	}
+	return out
 }
 
 // bodyLimit applies http.MaxBytesReader to every API request (PRD §31).

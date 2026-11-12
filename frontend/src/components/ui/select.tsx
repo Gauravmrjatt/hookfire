@@ -1,0 +1,34 @@
+import * as React from "react";
+import { ChevronDown } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+
+/**
+ * Native select, tokenized. Native is deliberate: it is keyboard-complete,
+ * screen-reader-complete, and touch-friendly on every platform for free.
+ */
+export const Select = React.forwardRef<
+  HTMLSelectElement,
+  React.SelectHTMLAttributes<HTMLSelectElement>
+>(({ className, children, ...props }, ref) => (
+  <div className="relative inline-flex w-full items-center">
+    <select
+      ref={ref}
+      className={cn(
+        "focus-ring h-8 w-full appearance-none rounded-xs border border-line-strong bg-surface pl-4 pr-8 text-xs text-fg",
+        "transition-colors duration-[120ms] hover:bg-surface-raised/30",
+        "disabled:cursor-not-allowed disabled:opacity-45",
+        "[&>option]:bg-surface-raised [&>option]:text-fg",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </select>
+    <ChevronDown
+      aria-hidden="true"
+      className="pointer-events-none absolute right-3 size-[14px] text-fg-muted"
+    />
+  </div>
+));
+Select.displayName = "Select";

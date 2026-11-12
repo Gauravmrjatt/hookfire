@@ -35,7 +35,12 @@ func (h *EndpointsHandler) Create(w http.ResponseWriter, r *http.Request) {
 		h.writeError(w, err)
 		return
 	}
-	response.JSON(w, http.StatusCreated, ep)
+	// The signing secret is returned exactly once, at creation. It is never
+	// serialized by model.Endpoint (json:"-") so list/get can't leak it.
+	response.JSON(w, http.StatusCreated, struct {
+		model.Endpoint
+		Secret string `json:"secret"`
+	}{Endpoint: ep, Secret: ep.Secret})
 }
 
 func (h *EndpointsHandler) List(w http.ResponseWriter, r *http.Request) {
