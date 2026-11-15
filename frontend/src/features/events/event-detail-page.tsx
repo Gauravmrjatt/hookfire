@@ -63,10 +63,10 @@ export function EventDetailPage() {
           Events
         </Link>
 
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-8">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b-[0.5px] border-line pb-[24px]">
           <div className="flex min-w-0 flex-col gap-2">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-md font-semibold tracking-[-0.02em] text-fg">
+              <h1 className="text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-fg">
                 {event.data.event_type}
               </h1>
               <Badge tone={deadLetter > 0 ? "danger" : inFlight > 0 ? "info" : "success"}>
@@ -98,8 +98,8 @@ export function EventDetailPage() {
           <JsonViewer value={event.data.payload} label="Event payload" collapsedHeight={280} />
 
           <Card className="overflow-hidden">
-            <div className="flex items-center justify-between border-b border-line p-4">
-              <h2 className="text-xs font-semibold text-fg">Deliveries</h2>
+            <div className="flex items-center justify-between border-b-[0.5px] border-line p-4">
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Deliveries</h2>
               <span className="text-2xs text-fg-muted">
                 {delivered}/{deliveries.length} delivered
               </span>
@@ -135,7 +135,7 @@ export function EventDetailPage() {
                         <TableCell className="max-w-[200px]">
                           <Link
                             to={`/endpoints/${delivery.endpoint_id}`}
-                            className="focus-ring block truncate rounded-xs font-mono text-2xs text-fg-subtle hover:text-fg"
+                            className="focus-ring block truncate rounded-xs font-mono text-2xs text-fg-muted hover:text-fg"
                           >
                             {delivery.endpoint_id}
                           </Link>
@@ -169,11 +169,11 @@ export function EventDetailPage() {
         </div>
 
         <Card className="h-fit p-8">
-          <h2 className="mb-4 text-xs font-semibold text-fg">Event metadata</h2>
+          <h2 className="mb-4 text-sm font-medium leading-[20px] text-fg">Event metadata</h2>
           <dl className="flex flex-col gap-4 text-2xs">
             <div className="flex flex-col gap-1">
               <dt className="text-fg-muted">Event id</dt>
-              <dd className="break-all font-mono text-fg-subtle">{event.data.id}</dd>
+              <dd className="break-all font-mono text-fg-muted">{event.data.id}</dd>
             </div>
             <div className="flex flex-col gap-1">
               <dt className="text-fg-muted">Received</dt>
@@ -212,7 +212,7 @@ export function EventDetailPage() {
         }}
       >
         <SheetContent aria-describedby={undefined}>
-          <DialogTitle className="mb-6 text-sm font-semibold text-fg">
+          <DialogTitle className="mb-[16px] text-sm font-medium leading-[20px] tracking-[-0.13px] text-fg">
             Delivery detail
           </DialogTitle>
           {selected ? <DeliveryDetail id={selected} /> : null}

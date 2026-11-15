@@ -2,6 +2,10 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Page heading matched to the console's type ramp: a 21/530/24 title, a
+ * 13/440/20 description, and an 8% hairline separating the header from content.
+ */
 export function PageHeader({
   title,
   description,
@@ -16,17 +20,19 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        "flex flex-col gap-4 border-b border-line pb-8 md:flex-row md:items-start md:justify-between",
+        "flex flex-col gap-4 border-b-[0.5px] border-line pb-[24px] md:flex-row md:items-start md:justify-between",
         className,
       )}
     >
       <div className="flex flex-col gap-1">
-        <h1 className="text-md font-semibold tracking-[-0.02em] text-fg">{title}</h1>
+        <h1 className="text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-fg">
+          {title}
+        </h1>
         {description ? (
-          <p className="max-w-[72ch] text-xs text-fg-muted">{description}</p>
+          <p className="max-w-[72ch] text-xs leading-[20px] text-fg-muted">{description}</p>
         ) : null}
       </div>
-      {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
+      {actions ? <div className="flex flex-wrap items-center gap-4">{actions}</div> : null}
     </header>
   );
 }

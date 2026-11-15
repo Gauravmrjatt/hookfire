@@ -50,8 +50,8 @@ export function TableRow({ className, ...props }: React.HTMLAttributes<HTMLTable
   return (
     <tr
       className={cn(
-        "border-b border-line transition-colors duration-[85ms]",
-        "hover:bg-surface-raised/60 data-[state=selected]:bg-surface-raised",
+        "border-b-[0.5px] border-line transition-colors duration-[85ms]",
+        "hover:bg-control data-[state=selected]:bg-control-active",
         className,
       )}
       {...props}
@@ -64,7 +64,7 @@ export function TableHead({ className, ...props }: React.ThHTMLAttributes<HTMLTa
     <th
       scope="col"
       className={cn(
-        "h-[32px] whitespace-nowrap px-8 text-left text-2xs font-medium text-fg-muted",
+        "h-[32px] whitespace-nowrap px-[16px] text-left text-2xs font-medium text-fg-muted",
         className,
       )}
       {...props}
@@ -73,5 +73,10 @@ export function TableHead({ className, ...props }: React.ThHTMLAttributes<HTMLTa
 }
 
 export function TableCell({ className, ...props }: React.TdHTMLAttributes<HTMLTableCellElement>) {
-  return <td className={cn("px-8 py-5 align-middle text-xs text-fg", className)} {...props} />;
+  return (
+    <td
+      className={cn("px-[16px] py-[10px] align-middle text-xs text-fg", className)}
+      {...props}
+    />
+  );
 }

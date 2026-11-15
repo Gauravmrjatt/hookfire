@@ -114,7 +114,7 @@ export function SettingsPage() {
           <Card className="p-8">
             <div className="mb-2 flex items-center gap-2">
               <Server aria-hidden="true" className="size-[14px] text-fg-muted" />
-              <h2 className="text-xs font-semibold text-fg">Connection</h2>
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Connection</h2>
             </div>
             <p className="mb-5 max-w-[72ch] text-2xs leading-[18px] text-fg-muted">
               Leave the base URL blank to use the origin this dashboard was served
@@ -147,7 +147,7 @@ export function SettingsPage() {
                 />
                 <span className="text-2xs text-fg-muted">
                   Currently resolving to{" "}
-                  <code className="font-mono text-fg-subtle">{resolveBase(baseUrl)}</code>
+                  <code className="font-mono text-fg-muted">{resolveBase(baseUrl)}</code>
                 </span>
               </div>
 
@@ -227,7 +227,7 @@ export function SettingsPage() {
           <Card className="p-8">
             <div className="mb-2 flex items-center gap-2">
               <Keyboard aria-hidden="true" className="size-[14px] text-fg-muted" />
-              <h2 className="text-xs font-semibold text-fg">Keyboard</h2>
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Keyboard</h2>
             </div>
             <p className="mb-4 text-2xs text-fg-muted">
               Every action is reachable without a pointer. Focus is always visible.
@@ -236,7 +236,7 @@ export function SettingsPage() {
               {SHORTCUTS.map((shortcut) => (
                 <div
                   key={`${shortcut.action}:${shortcut.keys.join("+")}`}
-                  className="flex items-center justify-between gap-4 border-b border-line py-2 last:border-0"
+                  className="flex items-center justify-between gap-4 border-b-[0.5px] border-line py-2 last:border-0"
                 >
                   <dt className="text-2xs text-fg-muted">{shortcut.action}</dt>
                   <dd className="flex shrink-0 items-center gap-1">
@@ -252,7 +252,7 @@ export function SettingsPage() {
           <Card className="p-8">
             <div className="mb-2 flex items-center gap-2">
               <Database aria-hidden="true" className="size-[14px] text-fg-muted" />
-              <h2 className="text-xs font-semibold text-fg">Local data</h2>
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Local data</h2>
             </div>
             <p className="mb-5 max-w-[72ch] text-2xs leading-[18px] text-fg-muted">
               The dashboard stores exactly two values in this browser: the API base
@@ -280,20 +280,20 @@ export function SettingsPage() {
           <Card className="p-8">
             <div className="mb-3 flex items-center gap-2">
               <KeyRound aria-hidden="true" className="size-[14px] text-fg-muted" />
-              <h2 className="text-xs font-semibold text-fg">Mint a token</h2>
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Mint a token</h2>
             </div>
             <p className="text-2xs leading-[18px] text-fg-muted">
               Tokens are HS256 JWTs signed with the engine's{" "}
-              <code className="font-mono text-fg-subtle">JWT_SECRET</code>. Use the
+              <code className="font-mono text-fg-muted">JWT_SECRET</code>. Use the
               Makefile target or the helper in the repository:
             </p>
-            <pre className="mt-3 overflow-x-auto rounded-xs border border-line bg-surface p-4 font-mono text-2xs leading-[18px] text-fg-subtle">
+            <pre className="mt-3 overflow-x-auto rounded-xs border-[0.5px] border-line bg-surface p-4 font-mono text-2xs leading-[18px] text-fg-subtle">
               <code>{`JWT_SECRET=… make token`}</code>
             </pre>
           </Card>
 
           <Card className="p-8">
-            <h2 className="mb-3 text-xs font-semibold text-fg">About</h2>
+            <h2 className="mb-3 text-sm font-medium leading-[20px] text-fg">About</h2>
             <dl className="flex flex-col gap-3 text-2xs">
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-fg-muted">Product</dt>
@@ -309,14 +309,14 @@ export function SettingsPage() {
               </div>
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-fg-muted">Engine</dt>
-                <dd className="truncate font-mono text-fg-subtle">{resolveBase(baseUrl)}</dd>
+                <dd className="truncate font-mono text-fg-muted">{resolveBase(baseUrl)}</dd>
               </div>
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-fg-muted">Delivery model</dt>
                 <dd className="text-fg">At least once</dd>
               </div>
             </dl>
-            <div className="mt-5 flex flex-col gap-2 border-t border-line pt-4">
+            <div className="mt-5 flex flex-col gap-2 border-t-[0.5px] border-line pt-4">
               <a
                 href="https://github.com/Gauravmrjatt/hookfire"
                 target="_blank"

@@ -57,7 +57,7 @@ export function Topbar({
   const queryClient = useQueryClient();
 
   return (
-    <header className="sticky top-0 z-20 flex h-[48px] items-center gap-2 border-b border-line bg-surface/90 px-4 backdrop-blur-md md:px-8">
+    <header className="sticky top-0 z-20 flex h-[48px] items-center gap-2 border-b-[0.5px] border-line bg-surface px-[16px] md:px-[24px]">
       <Button
         variant="ghost"
         size="icon-sm"
@@ -69,7 +69,7 @@ export function Topbar({
       </Button>
 
       <div className="flex min-w-0 items-center gap-2">
-        <span className="truncate text-2xs font-medium text-fg-muted">
+        <span className="truncate text-xs text-fg-muted">
           {crumb(location.pathname)}
         </span>
       </div>
@@ -77,7 +77,7 @@ export function Topbar({
       <button
         type="button"
         onClick={onOpenCommand}
-        className="focus-ring ml-auto hidden h-[28px] w-[220px] items-center gap-2 rounded-xs border border-line bg-surface-raised/40 px-3 text-2xs text-fg-muted transition-colors duration-[120ms] hover:border-line-strong hover:text-fg md:flex"
+        className="field-control focus-ring ml-auto hidden h-[28px] w-[220px] items-center gap-[8px] rounded-xs px-[8px] text-xs text-fg-subtle transition-colors duration-[85ms] hover:text-fg md:flex"
         aria-label="Open command palette"
       >
         <Search aria-hidden="true" className="size-[13px]" />
@@ -108,7 +108,7 @@ export function Topbar({
             <Button variant="ghost" size="icon-sm" aria-label="Open account menu">
               <span
                 aria-hidden="true"
-                className="flex size-[20px] items-center justify-center rounded-full border border-line-strong bg-surface-strong text-[10px] font-semibold text-fg"
+                className="flex size-[20px] items-center justify-center rounded-full bg-control text-[11px] font-medium text-fg"
               >
                 OP
               </span>

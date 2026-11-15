@@ -91,7 +91,7 @@ export function EventsPage() {
       />
 
       <Card className="overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-line p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b-[0.5px] border-line p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <Radio aria-hidden="true" className="size-[14px] text-fg-muted" />
             <span className="text-2xs text-fg-muted">

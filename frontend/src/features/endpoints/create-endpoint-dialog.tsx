@@ -124,11 +124,11 @@ export function CreateEndpointDialog({
             </DialogHeader>
 
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1 rounded-xs border border-line bg-surface p-4">
+              <div className="flex flex-col gap-1 rounded-xs border-[0.5px] border-line bg-surface p-4">
                 <span className="text-2xs text-fg-muted">Name</span>
                 <span className="text-xs text-fg">{created.name}</span>
                 <span className="mt-2 text-2xs text-fg-muted">Endpoint id</span>
-                <span className="break-all font-mono text-2xs text-fg-subtle">
+                <span className="break-all font-mono text-2xs text-fg-muted">
                   {created.id}
                 </span>
               </div>

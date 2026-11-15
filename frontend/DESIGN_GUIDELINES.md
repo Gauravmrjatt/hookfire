@@ -2,7 +2,7 @@
 
 Implementation-ready, token-driven UI guidance for the Hookfire Activity console.
 
-**Version** 1.0 · **Surface** operator dashboard (dark only) · **Target** WCAG 2.2 AA
+**Version** 1.1 · **Surface** operator dashboard (dark only) · **Target** WCAG 2.2 AA
 
 ---
 
@@ -57,6 +57,22 @@ Authenticated operators and engineers: on-call, platform, integrations. They are
 - **zod** for form validation, **sonner** for toasts, **cmdk** for the command palette, **lucide-react** for icons.
 - Charts are hand-built SVG; no charting dependency. The engine exposes counters, so charts render a labelled session window, never "history".
 
+### 1.7 Visual source of truth
+
+The reference surface is the **live** OpenCode console (`opencode.ai/console`), not a prose approximation of it. The values in this document were read from the console's shipped CSS bundles, so they describe what the product actually renders:
+
+| Property | Live console (implemented here) | Earlier approximation |
+|---|---|---|
+| App canvas | `#161616` | `#0D0D0D` |
+| Layer-01 | `#242424` | `#141414` |
+| Structural hairline | `rgba(255,255,255,.08)` at `0.5px` | `#222222` at `1px` |
+| Radii | `6px` containers, `4px` inner items | `12px` cards / `8px` controls |
+| Family | Inter, `13/440/20`, tracking `-0.04px` | system UI stack |
+| Tabs | 28 px segmented control | 2 px underline |
+| Weights | `440` and `530` | `400` / `600` |
+
+**If the live console changes, this table changes first.** A screenshot or CSS bundle is evidence; a remembered hex value is not. The approximation column is retained only to explain why older drafts of this document differ — do not implement it.
+
 ---
 
 ## 2. Design tokens and foundations
@@ -75,7 +91,7 @@ Component guidance and component code **must** reference semantic tokens (`bg-su
 
 | Group | Token | Value |
 |---|---|---|
-| Surface | `surface.base` | `#000000` |
+| Surface | `surface.base` | `#161616` |
 | Surface | `surface.muted` | `#ffffff` |
 | Surface | `surface.raised` | `#242424` |
 | Surface | `surface.strong` | `#2e2e2e` |
@@ -83,18 +99,29 @@ Component guidance and component code **must** reference semantic tokens (`bg-su
 | Surface | `control.hover` | `rgba(255,255,255,.12)` |
 | Surface | `control.active` | `rgba(255,255,255,.16)` |
 | Text | `text.primary` | `#fafafa` |
-| Text | `text.secondary` | `#808080` |
-| Text | `text.tertiary` | `#aeaeae` |
+| Text | `text.secondary` | `#aeaeae` |
+| Text | `text.tertiary` | `#808080` |
 | Text | `text.inverse` | `#a2bcff` |
+| Line | `line.subtle` | `rgba(255,255,255,.08)` |
+| Line | `line.strong` | `rgba(255,255,255,.20)` |
+| Focus | `focus.ring` | `#6b8fff` |
+| Status | `status.success` | `#6bd586` |
+| Status | `status.warning` | `#f2cf76` |
+| Status | `status.danger` | `#f17471` |
+| Status | `status.info` | `#7698fd` |
 | Type | `font.family.primary` | `Inter` |
 | Type | `font.family.stack` | `Inter, Inter Fallback, sans-serif` |
 | Type | `font.size.base` | `13px` |
 | Type | `font.weight.base` | `440` |
 | Type | `font.weight.medium` | `530` |
 | Type | `font.lineHeight.base` | `20px` |
+| Type | `tracking.base` | `-0.04px` |
 | Space | `space.1 … space.8` | `2, 4, 6, 8, 10, 11, 12, 15px` |
 | Radius | `radius.xs` | `6px` |
 | Shadow | `shadow.1` | `rgba(0,0,0,.4) 0 1px 2px, rgba(255,255,255,.2) 0 0 0 .5px, rgba(255,255,255,.1) 0 -.5px 0` |
+| Shadow | `shadow.raised` | `rgba(0,0,0,.3) 0 2px 4px, rgba(0,0,0,.3) 0 1px 2px, rgba(255,255,255,.16) 0 0 0 .5px, rgba(255,255,255,.06) 0 -.5px 0` |
+| Shadow | `shadow.floating` | `rgba(0,0,0,.3) 0 8px 16px, rgba(0,0,0,.3) 0 4px 8px, rgba(255,255,255,.16) 0 0 0 .5px, rgba(255,255,255,.06) 0 -.5px 0` |
+| Shadow | `shadow.overlay` | `rgba(0,0,0,.3) 0 16px 32px, rgba(0,0,0,.3) 0 8px 16px, rgba(255,255,255,.16) 0 0 0 .5px, rgba(255,255,255,.06) 0 -.5px 0` |
 | Motion | `duration.instant` | `85ms` |
 | Motion | `duration.fast` | `120ms` |
 | Motion | `duration.normal` | `150ms` |
@@ -106,18 +133,17 @@ Every token below is implemented in `src/index.css`. Components must use these n
 
 | Semantic token | CSS variable | Class | Use for | Never use for |
 |---|---|---|---|---|
-| `surface` | `--surface-base` | `bg-surface` | Page canvas, sheets, code blocks, inputs | Content grouping |
-| `surface-raised` | `--surface-raised` | `bg-surface-raised` | Dialogs, menus, toasts, badges | Full-page backgrounds |
-| `surface-raised/35` | — | `bg-surface-raised/[0.35]` | Card fill over the canvas | Interactive targets |
-| `surface-strong` | `--surface-strong` | `bg-surface-strong` | Hover fill, selected nav, switch track | Page canvas |
+| `surface` | `--surface-base` | `bg-surface` | Page canvas, field fill, code blocks, sheets | Content grouping |
+| `surface-raised` | `--surface-raised` | `bg-surface-raised` | Cards, dialogs, menus, toasts, chart axis strips | Full-page backgrounds |
+| `surface-strong` | `--surface-strong` | `bg-surface-strong` | Segmented-control track, switch track, tooltip fill, icon chips | Page canvas |
 | `surface-inverse` | `--surface-muted` | `bg-surface-inverse` | `primary` (white) button fill | Large areas |
-| `control` | `--control-base` | `bg-control` | `default` (neutral) button fill, icon actions, quiet toolbars, field hover wash | Page canvas |
+| `control` | `--control-base` | `bg-control` | `default` (neutral) button fill, icon actions, menu/row hover, field hover wash | Page canvas |
 | `control-hover` | `--control-hover` | `bg-control-hover` | Hover fill for `control` | Default state |
 | `control-active` | `--control-active` | `bg-control-active` | Pressed/expanded fill for `control` | Hover state |
 | `fg` | `--text-primary` | `text-fg` | Primary text, values, titles | Metadata you want de-emphasised |
-| `fg-muted` | `--text-secondary` | `text-fg-muted` | Secondary text on `surface` and tinted fills | Text on full `surface-raised` |
-| `fg-subtle` | `--text-tertiary` | `text-fg-subtle` | Secondary text on `surface-raised`; mono ids; JSON | Body copy |
-| `accent-ink` | `--text-inverse` | `text-accent-ink` | Links, active filter text, accent icons | Static emphasis |
+| `fg-muted` | `--text-secondary` | `text-fg-muted` | Secondary text and labels on any surface (7.0:1 on `surface-raised`) | Primary values |
+| `fg-subtle` | `--text-tertiary` | `text-fg-subtle` | Faint metadata, placeholders, mono ids **on the page canvas** (4.6:1 on `surface`) | Anything on `surface-raised`, body copy |
+| `accent-ink` | `--text-inverse` | `text-accent-ink` | Links, checked switch fill, accent icons | Static emphasis |
 | `line` | `--line-subtle` | `border-line` | Decorative separators, card borders, table rules | The only boundary of a control |
 | `line-strong` | `--line-strong` | `border-line-strong` | `outline` button boundaries, switch hairlines | Text fields (use `shadow-1`), decorative separators |
 | `focus` | `--focus-ring` | `outline-focus` / `.focus-ring` | Focus indicators | Text color |
@@ -129,62 +155,64 @@ Every token below is implemented in `src/index.css`. Components must use these n
 
 **Status tokens are a documented extension** of the brand palette: the product's state vocabulary (pending, processing, delivered, retrying, failed, dead letter) cannot be expressed by four neutrals and one blue. They are semantic tokens, defined once, and must not be re-derived per feature.
 
-**Why `fg-subtle` exists next to `fg-muted`:** `#808080` on `#242424` measures ~3.9:1 and fails AA for body text at 11–13 px. `fg-muted` is therefore restricted to `surface` and translucent card fills (≥ 4.9:1). On full `surface-raised` (dialogs, menus, toasts) use `fg-subtle` (~7.0:1) or `fg` (~14.9:1). This rule is non-negotiable and is checked in QA.
+**Why `fg-subtle` exists next to `fg-muted`:** `#808080` on `#242424` measures 3.9:1 and fails AA for body text at 11–13 px. `fg-muted` (#aeaeae) is the safe secondary on every surface (7.0:1 on `surface-raised`). `fg-subtle` is therefore restricted to metadata, placeholders, and mono ids on `surface`, where it measures 4.6:1, and is never body copy on a raised panel. This rule is non-negotiable and is checked in QA.
 
 ### 2.4 Colour usage rules
 
 - **Must** express state with a status token plus text; colour alone is never the only signal.
-- **Must** keep the canvas black. There is no light theme and no per-page background tint beyond `surface-raised/[0.35]`.
-- **Must** use `accent-ink` for links and the focus ring only; it is not a decorative accent.
+- **Must** keep the canvas `#161616`. There is no light theme and no per-page background tint. Cards are a solid layer-01 fill, never a translucent wash.
+- **Must** use `accent-ink` for links and the checked switch fill, and the `focus` token for focus indicators; neither is a decorative accent.
 - **Should** use at most one chromatic status per row; two competing badges make a table unscannable.
-- **Must not** tint an entire card with a status colour. Use a left border, a badge, or a status dot.
+- **Must not** tint an entire card with a status colour. Use a badge or a status dot.
 
 ### 2.5 Contrast matrix (measured, AA thresholds)
 
 | Foreground | Background | Ratio | Allowed |
 |---|---|---|---|
-| `fg` #fafafa | `surface` #000 | 20.4:1 | Everything |
+| `fg` #fafafa | `surface` #161616 | 17.3:1 | Everything |
 | `fg` | `surface-raised` #242424 | 14.9:1 | Everything |
-| `fg-subtle` #aeaeae | `surface` | 9.5:1 | Everything |
-| `fg-subtle` | `surface-raised` | 7.0:1 | Everything |
-| `fg-muted` #808080 | `surface` | 5.3:1 | Body text ≥ 4.5:1 |
-| `fg-muted` | card fill (35% raised) | 4.9:1 | Body text, just clears |
-| `fg-muted` | `surface-raised` | 3.9:1 | **Non-text only** (icons ≥ 3:1) |
-| `accent-ink` #a2bcff | `surface` | 8.2:1 | Links, focus ring |
-| `success` #3fb950 | `surface` | 8.3:1 | Text + icons |
-| `warning` #d29922 | `surface` | 8.3:1 | Text + icons |
-| `danger` #f85149 | `surface` | 6.3:1 | Text + icons |
-| `line-strong` (38% white ≈ #616161) | `surface` | 3.4:1 | Control boundaries (1.4.11) |
-| `focus` | any surface | ≥ 8.2:1 | Focus indicator |
+| `fg-muted` #aeaeae | `surface` | 8.2:1 | Everything |
+| `fg-muted` | `surface-raised` | 7.0:1 | Everything |
+| `fg-subtle` #808080 | `surface` | 4.6:1 | Metadata ≥ 11 px, placeholders |
+| `fg-subtle` | `surface-raised` | 3.9:1 | **Non-text only** (icons ≥ 3:1) |
+| `accent-ink` #a2bcff | `surface` | 9.6:1 | Links |
+| `focus` #6b8fff | `surface` | 6.0:1 | Focus indicator (non-text ≥ 3:1) |
+| `success` #6bd586 | `surface` | 9.9:1 | Text + icons |
+| `warning` #f2cf76 | `surface` | 12.0:1 | Text + icons |
+| `danger` #f17471 | `surface` | 6.4:1 | Text + icons |
+| `info` #7698fd | `surface` | 6.6:1 | Text + icons |
+| `line-strong` (20% white ≈ #454545) | `surface` | 1.9:1 | `outline` boundaries and switch tracks — documented exception above |
 
 If a pair is not in this table, it **must** be measured before shipping. "It looks fine" is not evidence.
 
+**Documented exception.** The console-derived `line-strong` hairline is 1.9:1, below the 3:1 non-text threshold. Controls that rely on it also carry a text label, a 6% white fill, and a 2 px focus ring (6.0:1), which together identify the control and its state. Do not use `line-strong` as the only way to perceive a control.
+
 ### 2.6 Typography
 
-**Family.** Inter Variable, fallback `Inter, Inter Fallback, sans-serif`. Monospace (`SFMono-Regular`, `ui-monospace`) is reserved for identifiers, payloads, URLs, metric names, and code.
+**Family.** `"Inter Variable", Inter, "Inter Fallback", ui-sans-serif, system-ui, sans-serif`. Monospace (`SFMono-Regular`, `ui-monospace`) is reserved for identifiers, payloads, URLs, metric names, and code. This is the console's stack: Inter first, system UI only as a fallback.
 
-**Base.** `13px / 20px`, weight `440`. This is the body and table text size. Do not set a different body weight.
+**Base.** `13px / 20px`, weight `440`, tracking `-0.04px`. This is set once on `body` and is the size of every table cell, input, nav item, and paragraph. Do not set a different body weight or tracking.
 
 **Scale — four steps, no exceptions:**
 
-| Step | Size | Line height | Class | Use |
-|---|---|---|---|---|
-| `2xs` | 11px | 16px | `text-2xs` | Metadata, table headers, badges, keyboard hints, captions. Never paragraphs. |
-| `xs` | 13px | 20px | `text-xs` | Body, table cells, inputs, nav items, card titles |
-| `sm` | 15px | 22px | `text-sm` | Dialog titles, page section leads, login form title |
-| `md` | 21px | 28px | `text-md` | Page H1 only (one per page) |
+| Step | Size | Line height | Tracking | Class | Use |
+|---|---|---|---|---|---|
+| `2xs` | 11px | 16px | `-0.04px` | `text-2xs` | Metadata, table headers, badges, axis strips, keyboard hints, captions. Never paragraphs. |
+| `xs` | 13px | 20px | `-0.04px` | `text-xs` | Body, table cells, inputs, nav items, buttons, menu items |
+| `sm` | 15px | 20px | `-0.04px` (titles) / `-0.13px` (dialog) | `text-sm leading-[20px]` | Card titles, dialog titles, login form title |
+| `md` | 21px | 24px | `-0.04px` | `text-[21px] leading-[24px]` | Page H1 and the primary value in a stat card |
 
-**Weight:** `440` body, `530` labels, buttons and badges, `600` headings and numeric values. Use `font-medium`/`font-semibold`; never add a fourth weight.
+**Weight:** exactly two weights — `440` body and `530` (`font-medium`) for headings, labels, buttons, table headers, badges, and numeric values. There is no `600`/`700` in the product. The console's "medium" *is* 530; `font-semibold` is a defect.
 
-**Tracking:** `-0.02em` on `md` headings and large numeric values, `-0.01em` on `sm`/card titles, `0` elsewhere.
+**Tracking:** `-0.04px` is the default everywhere; dialog titles use `-0.13px` (the console's tighter overlay headline). Do not introduce `em`-based tracking — the brand value is px.
 
-**Numerals:** tables and metrics **must** use `font-variant-numeric: tabular-nums` (set globally on `table`, and on metric values) so columns align.
+**Numerals:** tables and metrics **must** use `font-variant-numeric: tabular-nums` (set globally on `table`, on segmented tabs, and on metric values) so columns align.
 
 **Rules:**
-- **Must** use exactly one `text-md` element per page, and it is the H1.
+- **Must** use exactly one 21 px H1 per page.
 - **Must** keep `text-2xs` to labels, metadata, and badges; never a sentence longer than one line.
-- **Must not** use `text-sm` for body copy; it is a title/lead step.
-- **Must not** use condensed, italic, or all-caps transforms.
+- **Must not** use `text-sm` for body copy; it is a title step.
+- **Must not** use condensed, italic, all-caps transforms, or a third weight.
 - **Should** truncate long identifiers with `truncate` and expose the full value via `title` or the detail view, never by wrapping a monospace id across four lines.
 
 ### 2.7 Spacing
@@ -208,7 +236,7 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 - Inside a control: `gap-2` (4 px) to `gap-3` (6 px).
 - Inside a card: `gap-2` between label and value, `gap-4` between groups, `p-8` (15 px) padding.
 - Between page sections: `gap-8` (15 px) vertical.
-- Page gutter: `px-4` mobile, `px-8` ≥ 768 px.
+- Page gutter: `px-[16px]` mobile, `md:px-[24px]` ≥ 768 px. The top bar, main content, and footer share the same gutter so their left edges align.
 
 **Rules:**
 - **Must** use the nearest token. `p-[9px]`, `gap-[5px]`, `mt-[13px]` are defects.
@@ -218,9 +246,9 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 
 ### 2.8 Radius, elevation, borders
 
-- **Radius:** `6px` everywhere — controls, cards, dialogs, sheets, badges, popovers. No second radius. Icon buttons are also 6 px; circles are permitted only for status dots, avatars, and the switch thumb.
-- **Elevation:** exactly one shadow, `shadow-1`, used only for floating layers (dialog, sheet, menu, popover, tooltip, toast, switch thumb). **Must not** be used on cards, tables, or hover states.
-- **Borders:** 1 px `border-line` for structure; 1 px `border-line-strong` for `outline` buttons and switch tracks. Text fields and selects have **no** border — their boundary is the 0.5 px hairline inside `shadow-1`. **Must not** combine a border and `shadow-1` on the same box; that draws two visible edges.
+- **Radius:** `6px` for every container and control — cards, dialogs, sheets, inputs, buttons, badges, popovers, segmented tracks. Inner hit targets that sit *inside* a 6 px panel (menu items, dialog close) use `4px` so the nesting reads correctly. `rounded-full` is permitted only for status dots, avatars, switch tracks/thumbs, and scrollbar thumbs.
+- **Elevation:** four console-derived steps. `shadow-1` draws the 0.5 px hairline for fields and the neutral button; `shadow-floating` is for menus and tooltips; `shadow-overlay` is for dialogs, sheets, and toasts. `shadow-raised` exists for panels that separate by light rather than a border and is currently unused. **Must not** apply an elevation to cards, tables, or hover states.
+- **Borders:** `0.5px` `border-line` (8% white) for all structural hairlines — cards, tables, top bar, page-header rule, axis strips. `1px` `border-line-strong` (20% white) for `outline` buttons and switch tracks. Text fields and selects have **no** border — their boundary is the 0.5 px hairline inside `shadow-1`. **Must not** combine a border and an elevation on the same box; that draws two visible edges.
 
 ### 2.9 Motion
 
@@ -255,7 +283,7 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 
 ### 2.12 Layout and density budget
 
-**Chrome:** fixed 236 px sidebar (`lg` and up), 48 px top bar, 48 px sidebar brand strip, max content width 1400 px, page gutter 16/32 px.
+**Chrome:** fixed 236 px sidebar (`lg` and up), 48 px top bar, 48 px sidebar brand strip, max content width 1400 px, page gutter 16 px mobile / 24 px desktop.
 
 **Breakpoints:** base < 640, `sm` ≥ 640, `md` ≥ 768, `lg` ≥ 1024, `xl` ≥ 1280. The navigation collapses to a sheet below `lg`.
 
@@ -312,7 +340,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 **Keyboard:** `Tab` reaches it, `Enter` and `Space` activate. Disabled buttons are removed from the tab order by the native attribute.
 **Pointer:** full 28–40 px target; hover may preview the action but must not fire it.
-**Touch:** minimum 32×32 px target, 8 px separation; no hover-only affordances.
+**Touch:** 28×28 minimum (24×24 floor), 8 px separation; no hover-only affordances.
 
 **Edge cases:** label wraps to two lines only in `link`; icon-only buttons `must` have `aria-label`; never render a loading button without a stable label, or the button resizes mid-click.
 
@@ -397,12 +425,13 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.6 Badge and status badge
 
-**Anatomy:** 1 px border, 10% tint of its tone, tone text, 11 px medium, optional 6 px dot. Height 18–20 px, padding `px-2`.
+**Anatomy:** `6px` radius, `1px` tone border at 30% alpha, `10%` tone fill, tone text, `11px / 16px` at weight `530`, optional `6px` dot. Height ~18 px via `py-[1px]` and `px-2` (4 px), `gap-1` (2 px) between dot and label.
 
-**Variants:** `neutral`, `success`, `warning`, `danger`, `info`; shapes `default`, `dot`, `mono`.
+**Variants:** `neutral`, `success`, `warning`, `danger`, `info`; shapes `default`, `dot`, `mono` (monospace label for status codes).
 
 **Rules**
 - **Must** always show the label; the dot is supplementary.
+- **Must** render the dot with a `0 0 6px currentColor` glow so it reads as a lit console indicator; the glow is never the only signal because the label is always present.
 - **Must** map status through `statusMeta()` so wording is identical everywhere (Pending, Processing, Delivered, Retrying, Failed, Dead letter).
 - **Must** wrap an interactive status in a tooltip with a plain-language description, and make the wrapper focusable (`tabIndex=0`) with a composed `aria-label`.
 - **Must not** use a badge as a button. Replay is a button.
@@ -412,11 +441,12 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.7 Card and stat card
 
-**Anatomy:** `surface-raised/[0.35]` fill, 1 px `line`, radius 6 px, `p-8` (15 px). Stat card: label (11 px `fg-muted`) · value (21 px semibold, tabular) · hint (11 px) · optional 132×30 sparkline · optional footer separated by `border-line`.
+**Anatomy:** solid `surface-raised` (#242424) fill, `0.5px` `line` hairline, radius 6 px, `p-8` (15 px). Card title 15/20 at weight 530; description 13/20 `fg-muted`. Stat card: label (11/16, weight 530, `fg-muted`) · value (21/24, weight 530, tabular) · hint (11/16 `fg-muted`) · optional 28 px `control` icon chip · optional 132×30 sparkline · optional footer separated by a `0.5px` `line` rule with 12 px padding.
 
 **States:** a card is only interactive if it contains a link; the card itself has **no** hover, focus, active, disabled, loading, or error state. Interactive children own those states. A card that navigates must expose exactly one link and a visible focus ring on it.
 
 **Rules**
+- **Must** use a solid layer, never a translucent `surface-raised/[0.35]` wash; the console separates cards from the canvas by fill plus a hairline.
 - **Must** keep the value as the visually dominant element; never compete with a badge.
 - **Must** label the sparkline for assistive tech when it carries information beyond decoration (`role="img"` + `aria-label`), or mark it `aria-hidden` when the numeric value already states the same fact.
 - **Must** state the unit ("p99 latency", "per second") in the label, not the value.
@@ -426,16 +456,16 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.8 Table
 
-**Anatomy:** `<table>` inside a focusable scroll region (`role="region"`, `aria-label`, `tabIndex=0`), sticky-free header at 32 px, rows at ~40 px, cells `px-8` (15 px), row divider `border-line`.
+**Anatomy:** `<table>` inside a focusable scroll region (`role="region"`, `aria-label`, `tabIndex=0`). Header row 32 px, `11/16` at weight 530 in `fg-muted`, cells `px-[16px]`. Body cells `13/20`, `px-[16px] py-[10px]` (≈40 px rows), separated by a `0.5px` `line` hairline. Numeric columns are tabular and right-aligned.
 
 **States**
 
 | State | Visual |
 |---|---|
 | Default | Row text `fg`, metadata `fg-muted` |
-| Hover | `surface-raised/60` fill on the whole row |
+| Hover | `control` wash (6% white) across the whole row |
 | Focus-visible | `.focus-ring` on the inner link/button, not the row |
-| Active (`data-state=selected`) | `surface-raised` fill |
+| Active (`data-state=selected`) | `control-active` wash (16% white) |
 | Disabled | Not applicable |
 | Loading | Replace the body with `LoadingState` skeleton rows; keep the header and announce "Loading" via `role="status"` |
 | Error | Replace the body with `ErrorState` + a retry button |
@@ -453,7 +483,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.9 Dialog and sheet
 
-**Anatomy:** Radix portal · overlay `black/75` + 2 px blur · panel `surface-raised`, 1 px `line`, radius 6 px, `shadow-1`, `p-8`; sheet variant `surface`, right side, max 560 px, slides in on `slow`.
+**Anatomy:** Radix portal · overlay `black/60` with **no blur** · panel `surface-raised`, radius 6 px, `shadow-overlay`, `p-[16px]`, max width 480 px, `max-h-[calc(100dvh-32px)]` with internal scroll. Header `mb-[16px] gap-2 pr-[24px]`; title `15/20` at 530 with `-0.13px` tracking; description `13/20 fg-muted`; footer `mt-[24px] gap-4`. Close control is 24×24 at `right/top: 12px`, radius 4 px, `fg-muted` → `fg` on `control` hover. The sheet variant is a layer-01 panel inset 8 px from the right and top, `w-[min(560px,calc(100vw-16px))]`, `h-[calc(100dvh-16px)]`, same padding and overlay elevation.
 
 | State | Behaviour |
 |---|---|
@@ -467,32 +497,32 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 **Keyboard:** `Tab`/`Shift+Tab` cycle inside, `Escape` closes, `Enter` submits the form. Focus returns to the trigger on close.
 **Pointer:** overlay click closes; the panel must stop propagation.
-**Touch:** sheet is full-width below 640 px; the close target is ≥ 32 px.
+**Touch:** sheet is full-width below 640 px; the close target is 24×24.
 
-**Edge cases:** dialogs taller than the viewport scroll internally (`max-h-[calc(100vh-64px)]`); a dialog must never nest another dialog except the command palette over a page (never over another dialog); `aria-describedby` is required for dialogs with body copy, and explicitly `undefined` when the panel has no description.
+**Edge cases:** dialogs taller than the viewport scroll internally (`max-h-[calc(100dvh-32px)]`); a dialog must never nest another dialog except the command palette over a page (never over another dialog); `aria-describedby` is required for dialogs with body copy, and explicitly `undefined` when the panel has no description.
 
 ---
 
 ### 3.10 Dropdown menu and command palette
 
-**Menu:** Radix, `surface-raised`, `shadow-1`, min 200 px, items 32 px, icons 14 px. Items use `focus:bg-surface-strong` (which is also the hover/keyboard-active state). Labels are `fg-subtle` at 11 px.
+**Menu:** Radix, `surface-raised`, `shadow-floating`, min 160 px, `2px` inset padding, radius 6 px. Items are 28 px tall, radius 4 px, `px-[12px]`, `gap-[8px]`, 13 px text; icons 14 px in `fg-muted`. Items use `focus:bg-control` (which is also the hover/keyboard-active state, a 6% white wash). Labels are `24px` rows at `11/16` weight 530 in `fg-muted`; separators are `1px line` with `2px` vertical margin.
 
-**Command palette:** `cmdk` inside a dialog, input 40 px, groups, items 32 px, footer with key hints. Selected item = `surface-strong`.
+**Command palette:** `cmdk` inside a dialog, max width 560 px, pinned at 18% from the top, `p-0`. A 40 px search input sits on a `0.5px` bottom hairline; the list has 4 px padding and items are 28 px at radius 4 px. Group headings are `11/16` weight 530 in `fg-muted`. The selected item uses the `control` wash; the footer shows the keyboard hints.
 
 **States**
 
 | State | Behaviour |
 |---|---|
 | Default | Closed, trigger is a normal button |
-| Hover | Item fill `surface-strong` |
-| Focus-visible | Item fill `surface-strong`; the palette input keeps the ring |
+| Hover | Item fill `control` (6% white) |
+| Focus-visible | Item fill `control`; the palette input keeps the ring |
 | Active | Item activates on `Enter` |
 | Disabled | `opacity-50`, `pointer-events-none`; keep the label visible |
 | Loading | Search results are local; if remote results are added, show a single "Searching…" row, never a spinner that shifts layout |
 | Error | A failed action closes the menu and surfaces a toast |
 
 **Keyboard:** `⌘K`/`Ctrl+K` toggles the palette anywhere; `↑`/`↓` move, `Enter` runs, `Escape` closes, `?` opens it when focus is not in a field.
-**Touch:** menu items ≥ 32 px; the palette is not the only path to any action.
+**Touch:** menu items are 28 px tall; every menu action is duplicated in the command palette, so a missed tap is never a dead end.
 
 **Edge cases:** no results renders "No matches found."; endpoint results cap at 8 with the full list one navigation away; the palette must not steal `⌘K` while an input has a composition event active.
 
@@ -500,9 +530,9 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.11 Tabs, filters, search, pagination
 
-**Tabs:** Radix, 24 px trigger, container `surface-raised/60` + `line`, active `surface-strong` + `fg`, inactive `fg-muted`. `aria-label` on the list ("Filter by delivery status").
+**Tabs:** Radix wrapped in the console's segmented control. The track is 28 px tall, `surface-strong` (#2e2e2e), radius 6 px, and scrolls horizontally rather than wrapping. Items are 28 px tall with `12px` horizontal padding, `13/20` at weight 530, tabular numerals. Inactive labels are `fg-muted` and shift to `fg` on hover; the active item carries a 6% white fill plus a top-down sheen and `shadow-1`, and its label is `fg`. `aria-label` on the list ("Filter by delivery status").
 
-**Search:** 260 px input with a leading search icon and a clear button. Debounce 300 ms; the query is server-side; the clear button is a 32 px target labelled "Clear search". `Escape` clears the field.
+**Search:** 260 px input with a leading search icon and a clear button. Debounce 300 ms; the query is server-side; the clear button is a ≥ 24 px target labelled "Clear search". `Escape` clears the field.
 
 **Filters:** server-side; every filter change resets pagination to offset 0. Deep-linkable filters (`status`, `endpoint_id`) write to the URL with `replace`.
 
@@ -514,9 +544,9 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.12 Navigation (exactly two landmarks)
 
-**Primary sidebar:** `<nav aria-label="Primary">`, 32 px items, icon 15 px + label, active `surface-raised` + `fg`, hover `surface-raised/60` + `fg`, focus ring, dead-letter count badge. Brand strip 48 px; footer shows engine readiness and `⌘K` hint.
+**Primary sidebar:** `<nav aria-label="Primary">`, 28 px items at radius 6 px, icon 15 px + 13 px label, 8 px horizontal padding, `gap-[8px]` between icon and label. Active item uses the `control` wash (6% white) with `fg` text and weight 530; hover uses the same wash with `fg` text. Dead-letter count badge sits at the trailing edge. Brand strip 48 px with a 22 px `control` avatar chip; footer shows engine readiness and the `⌘K` hint.
 
-**Top bar:** breadcrumb label, command trigger, refresh, Send event, account menu. Not a `nav` landmark.
+**Top bar:** 48 px, solid `surface` with a `0.5px` bottom hairline, breadcrumb label, 28 px field-style command trigger, refresh, Send event, account menu. Not a `nav` landmark.
 
 **Pagination:** the only other `<nav>` on a page.
 
@@ -531,7 +561,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.13 Toasts
 
-`sonner`, bottom-right, max 4 visible, dark theme, `surface-raised`, `border-line`, `shadow-1`, title 13 px `fg`, description 11 px `fg-subtle`.
+`sonner`, bottom-right, max 4 visible, dark theme, `surface-raised`, `0.5px` `border-line`, `shadow-overlay`, radius 6 px, title 13 px `fg` at 530, description 11 px `fg-muted`.
 
 - **Must** be the secondary channel. Inline errors are required for form fields and blocking failures.
 - **Must** use a verb-led title ("Endpoint deactivated") and a factual description ("No new deliveries will fan out to it.").
@@ -555,8 +585,9 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.15 Charts
 
-Hand-built SVG, `viewBox` scaled to width, `aria-label` describing latest and peak, grid lines at 25/50/75% with 8% opacity, area fill at 8%.
+Hand-built SVG, `viewBox` scaled to width, `aria-label` describing latest and peak. Dashed `0.5px` grid lines at 0/25/50/75% of the plot at 16% current-colour opacity; a `1.5px` line over a vertical gradient area fill that fades from 18% to 0. The axis strip is a 21 px `surface-raised` bar with a `0.5px` hairline and `11/16` weight 530 `fg-muted` labels ("oldest · peak · now").
 
+- **Must** tint the chart by tone (`info`, `success`, `warning`, `danger`) using `currentColor`, so the line, fill, and grid stay in one hue.
 - **Must** state the window in copy ("session-local window", "collecting samples…").
 - **Must** render an explicit empty state with fewer than two samples.
 - **Must not** animate on every poll; only the width transition at `slow` (200 ms) and only when reduced motion is off.
@@ -595,7 +626,7 @@ WCAG 2.2 Level AA for the whole console. The criteria below are testable in impl
 
 ### 4.3 Pointer and touch
 
-- All targets ≥ 32×32 px, with ≥ 8 px separation in toolbars.
+- Targets are ≥ 24×24 px, or satisfy the 24 px spacing exception where a smaller control sits in clear space (the 34×20 switch). The standard control height is 28 px, with ≥ 8 px separation in toolbars.
 - Hover is never the only way to reveal an action or a tooltip's content; tooltips are supplementary and focusable triggers expose the same text.
 - Row navigation works with a single tap on the row's primary link; no double-tap or long-press gestures.
 - Drag is never required. No swipe-only actions.
@@ -605,11 +636,11 @@ WCAG 2.2 Level AA for the whole console. The criteria below are testable in impl
 | ID | Criterion | Pass/fail check |
 |---|---|---|
 | A11Y-01 | Every interactive element is keyboard reachable and operable. | Tab through each page; all controls receive focus and activate with `Enter`/`Space`. |
-| A11Y-02 | Focus is always visible. | Keyboard-tab through every page at 100% zoom; every stop shows a ≥ 2 px indicator with ≥ 2 px offset that is visible on its surface. |
+| A11Y-02 | Focus is always visible. | Keyboard-tab through every page at 100% zoom; every stop shows a ≥ 2 px ring, or the documented 1 px inset field outline, visible on its surface. |
 | A11Y-03 | No focus trap except in modal layers. | Tab from the first to last control and back; focus never disappears into the browser chrome on a normal page. |
 | A11Y-04 | Modal layers trap and restore focus. | Open every dialog/sheet/palette: `Tab` cycles inside, `Escape` closes, focus returns to the trigger. |
-| A11Y-05 | Body text meets 4.5:1; large text and UI meet 3:1. | Sample every text/background pair against §2.5; no `fg-muted` on full `surface-raised`. |
-| A11Y-06 | Control boundaries meet 3:1. | Inputs, selects, switches, and outline buttons are identifiable from their border/fill alone at 200% zoom. |
+| A11Y-05 | Body text meets 4.5:1; large text and UI meet 3:1. | Sample every text/background pair against §2.5; no `fg-subtle` on `surface-raised`. |
+| A11Y-06 | Controls remain identifiable without relying on a low-contrast hairline alone. | Every control also carries a fill, a text label, and a 2 px focus ring; the `line-strong` 1.9:1 hairline is a documented exception (§2.8). |
 | A11Y-07 | Status is never colour-only. | Disable colour: every status still carries its text label. |
 | A11Y-08 | Every control has an accessible name. | Accessibility inspection shows a non-empty name for every button, link, input, select, and switch; icon-only buttons use `aria-label`. |
 | A11Y-09 | Every image/chart has a text alternative or is hidden. | Decorative SVG/icons are `aria-hidden="true"`; informative charts have `role="img"` + summary. |
@@ -619,7 +650,7 @@ WCAG 2.2 Level AA for the whole console. The criteria below are testable in impl
 | A11Y-13 | Reduced motion is honoured. | With `prefers-reduced-motion: reduce`, no slides, pulses, or shimmer loops run. |
 | A11Y-14 | Reflow works at 320 CSS px and 400% zoom. | No horizontal page scrolling at 320 px; tables scroll inside their labelled region, not the page. |
 | A11Y-15 | Text spacing overrides do not break layout. | Apply 1.5× line height, 0.12em letter spacing, 2× paragraph spacing; no clipped or overlapping text. |
-| A11Y-16 | Touch targets meet 24×24 minimum and 32×32 target. | Measure every button/icon target; none below 32×32 except inline text links. |
+| A11Y-16 | Touch targets meet the 24×24 minimum or the spacing exception. | 28×28 is the standard, 24×24 is the floor, inline text links are exempt, and the 34×20 switch has clear surrounding space. |
 | A11Y-17 | The skip link works. | First `Tab` reveals "Skip to content"; activating it moves focus to `<main>`. |
 | A11Y-18 | Exactly one H1 and a logical heading order per page. | Heading outline shows one H1, then H2/H3 with no skipped levels. |
 | A11Y-19 | Navigation landmarks are unique and labelled. | At most two `<nav>` landmarks: "Primary" and "Pagination"; no unlabelled regions. |
@@ -743,7 +774,7 @@ Concise, confident, implementation-focused. The UI speaks like a senior engineer
 |---|---|---|
 | Status colour tokens | Delivery states cannot be expressed with four neutrals and one blue | Defined once in `index.css`; never re-derived per feature |
 | `2xs` 11 px step | Dense tables and badges need a metadata step below 13 px | Labels and metadata only; never paragraphs; ≥ 4.5:1 on its surface |
-| `line-strong` at 38% white | 16% failed 3:1 for control boundaries | Used only on `outline` buttons and switch tracks; fields use the `shadow-1` hairline, decorative separators stay at 8% |
+| `line-strong` at 20% white | 20% is the console hairline for legacy control edges; 38% would read as a second border system | Used only on `outline` buttons and switch tracks; fields use the `shadow-1` hairline, decorative separators stay at 8% |
 | Inset 1 px field focus | The field boundary is a hairline, so an offset ring would sit on neighbouring labels and rows | Text fields, textareas, and selects only; every other control uses the 2 px offset ring |
 | Circle radii | Status dots, avatars, switch thumb | Never on a rectangular control |
 
@@ -757,8 +788,8 @@ Run on every pull request that touches UI. A single unchecked item blocks merge.
 
 - [ ] No raw hex, `rgb()`, `hsl()`, or arbitrary colour in components.
 - [ ] No arbitrary spacing values (`p-[9px]`, `gap-[5px]`, `mt-[13px]`).
-- [ ] Type sizes come only from `2xs`, `xs`, `sm`, `md`; one `md` H1 per page.
-- [ ] Radius is 6 px on every rectangular surface; the only shadow is `shadow-1` on floating layers.
+- [ ] Type sizes come only from the 11 / 13 / 15 / 21 px ramp; one 21 px H1 per page.
+- [ ] Radius is 6 px on containers and 4 px on inner items; elevation appears only on floating layers.
 - [ ] Motion uses 85/120/150/200 ms and survives `prefers-reduced-motion`.
 - [ ] Status wording comes from `statusMeta()`; no feature invents its own labels.
 
@@ -772,7 +803,7 @@ Run on every pull request that touches UI. A single unchecked item blocks merge.
 ### 7.3 Accessibility
 
 - [ ] A11Y-01 through A11Y-22 in §4.4 pass.
-- [ ] Contrast sampled for every new fg/bg pair; `fg-muted` never on full `surface-raised`.
+- [ ] Contrast sampled for every new fg/bg pair; `fg-subtle` never on `surface-raised`.
 - [ ] Keyboard-only pass through the changed flow, including dialogs and the palette.
 - [ ] Icon-only controls have object-specific `aria-label`s.
 - [ ] Forms set `aria-invalid` + `aria-describedby`; errors announce.

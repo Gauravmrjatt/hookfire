@@ -71,6 +71,9 @@ export function useStats(refetchInterval: number | false = 5_000) {
     queryFn: () => apiRequest<Stats>("/v1/stats"),
     refetchInterval,
     staleTime: 2_000,
+    // The session chart keys samples off object identity, so every poll must
+    // produce a fresh snapshot even when the counters did not move.
+    structuralSharing: false,
   });
 }
 

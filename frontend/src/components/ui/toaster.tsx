@@ -10,11 +10,11 @@ export function Toaster() {
       toastOptions={{
         classNames: {
           toast:
-            "!bg-surface-raised !border !border-line !text-fg !shadow-1 !rounded-xs !text-xs",
+            "!bg-surface-raised !border-[0.5px] !border-line !text-fg !shadow-overlay !rounded-xs !text-xs",
           title: "!text-fg !font-medium",
-          description: "!text-fg-subtle !text-2xs",
+          description: "!text-fg-muted !text-2xs",
           actionButton: "!bg-primary !text-primary-foreground !rounded-xs",
-          cancelButton: "!bg-surface-strong !text-fg !rounded-xs",
+          cancelButton: "!bg-control !text-fg !rounded-xs",
           closeButton: "!bg-surface-raised !border-line !text-fg-muted",
         },
       }}

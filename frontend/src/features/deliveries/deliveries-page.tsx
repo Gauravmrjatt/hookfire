@@ -82,7 +82,7 @@ export function DeliveriesPage() {
       />
 
       <Card className="overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-line p-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex flex-col gap-3 border-b-[0.5px] border-line p-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="-mx-1 overflow-x-auto px-1">
             <Tabs
               value={status}
@@ -134,9 +134,9 @@ export function DeliveriesPage() {
         </div>
 
         {eventId ? (
-          <div className="flex flex-wrap items-center gap-2 border-b border-line bg-surface-raised/[0.35] px-4 py-2">
+          <div className="flex flex-wrap items-center gap-2 border-b-[0.5px] border-line bg-surface-raised px-4 py-2">
             <span className="text-2xs text-fg-muted">Filtered to event</span>
-            <code className="min-w-0 truncate font-mono text-2xs text-fg-subtle">
+            <code className="min-w-0 truncate font-mono text-2xs text-fg-muted">
               {eventId}
             </code>
             <Button
@@ -227,7 +227,7 @@ export function DeliveriesPage() {
                       <TableCell className="hidden max-w-[220px] lg:table-cell">
                         <Link
                           to={`/endpoints/${delivery.endpoint_id}`}
-                          className="focus-ring block truncate rounded-xs text-fg-subtle hover:text-fg"
+                          className="focus-ring block truncate rounded-xs text-fg-muted hover:text-fg"
                           title={delivery.endpoint_url}
                         >
                           {delivery.endpoint_name}
@@ -287,7 +287,7 @@ export function DeliveriesPage() {
         }}
       >
         <SheetContent aria-describedby={undefined}>
-          <DialogTitle className="mb-6 text-sm font-semibold text-fg">
+          <DialogTitle className="mb-[16px] text-sm font-medium leading-[20px] tracking-[-0.13px] text-fg">
             Delivery detail
           </DialogTitle>
           {selected ? <DeliveryDetail id={selected} /> : null}

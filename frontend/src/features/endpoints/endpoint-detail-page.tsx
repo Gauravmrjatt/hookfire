@@ -25,7 +25,7 @@ import { formatAbsolute, formatShort } from "@/lib/format";
 
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1 border-b border-line py-3 last:border-0">
+    <div className="flex flex-col gap-1 border-b-[0.5px] border-line py-3 last:border-0">
       <dt className="text-2xs text-fg-muted">{label}</dt>
       <dd className="min-w-0 break-words text-xs text-fg">{children}</dd>
     </div>
@@ -69,10 +69,10 @@ export function EndpointDetailPage() {
           Endpoints
         </Link>
 
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-8">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b-[0.5px] border-line pb-[24px]">
           <div className="flex min-w-0 flex-col gap-2">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-md font-semibold tracking-[-0.02em] text-fg">
+              <h1 className="text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-fg">
                 {ep.name}
               </h1>
               <Badge tone={ep.active ? "success" : "neutral"}>
@@ -111,10 +111,10 @@ export function EndpointDetailPage() {
       <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)]">
         <div className="flex flex-col gap-4">
           <Card className="p-8">
-            <h2 className="mb-2 text-xs font-semibold text-fg">Configuration</h2>
+            <h2 className="mb-2 text-sm font-medium leading-[20px] text-fg">Configuration</h2>
             <dl className="flex flex-col">
               <DetailRow label="Endpoint id">
-                <span className="font-mono text-2xs text-fg-subtle">{ep.id}</span>
+                <span className="font-mono text-2xs text-fg-muted">{ep.id}</span>
               </DetailRow>
               <DetailRow label="Rate limit">
                 {ep.rate_limit === 0
@@ -137,15 +137,15 @@ export function EndpointDetailPage() {
           <Card className="p-8">
             <div className="mb-2 flex items-center gap-2">
               <KeyRound aria-hidden="true" className="size-[14px] text-fg-muted" />
-              <h2 className="text-xs font-semibold text-fg">Signing</h2>
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Signing</h2>
             </div>
             <p className="text-2xs leading-[18px] text-fg-muted">
               The engine signs every request with{" "}
-              <code className="font-mono text-fg-subtle">HMAC-SHA256(secret, timestamp + "." + body)</code>{" "}
+              <code className="font-mono text-fg-muted">HMAC-SHA256(secret, timestamp + "." + body)</code>{" "}
               and sends it as{" "}
-              <code className="font-mono text-fg-subtle">X-Webhook-Signature</code>.
+              <code className="font-mono text-fg-muted">X-Webhook-Signature</code>.
             </p>
-            <div className="mt-4 flex items-start gap-2 rounded-xs border border-line bg-surface p-3">
+            <div className="mt-4 flex items-start gap-2 rounded-xs border-[0.5px] border-line bg-surface p-3">
               <ShieldCheck aria-hidden="true" className="mt-[2px] size-[13px] shrink-0 text-fg-muted" />
               <p className="text-2xs leading-[18px] text-fg-muted">
                 The secret is shown only once, when the endpoint is created.
@@ -156,9 +156,9 @@ export function EndpointDetailPage() {
         </div>
 
         <Card className="min-w-0 overflow-hidden">
-          <div className="flex items-center justify-between border-b border-line p-4">
+          <div className="flex items-center justify-between border-b-[0.5px] border-line p-4">
             <div className="flex flex-col gap-1">
-              <h2 className="text-xs font-semibold text-fg">Recent deliveries</h2>
+              <h2 className="text-sm font-medium leading-[20px] text-fg">Recent deliveries</h2>
               <p className="text-2xs text-fg-muted">
                 The ten most recent attempts for this endpoint.
               </p>
@@ -252,7 +252,7 @@ export function EndpointDetailPage() {
         }}
       >
         <SheetContent aria-describedby={undefined}>
-          <DialogTitle className="mb-6 text-sm font-semibold text-fg">
+          <DialogTitle className="mb-[16px] text-sm font-medium leading-[20px] tracking-[-0.13px] text-fg">
             Delivery detail
           </DialogTitle>
           {selected ? <DeliveryDetail id={selected} /> : null}

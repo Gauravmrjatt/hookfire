@@ -50,8 +50,14 @@ export function Sparkline({
       className={cn("overflow-visible text-info", className)}
       fill="none"
     >
-      <path d={area} fill="currentColor" opacity="0.1" />
-      <path d={line} stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round" strokeLinecap="round" />
+      <path d={area} fill="currentColor" opacity="0.12" />
+      <path
+        d={line}
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
       <circle cx={last[0]} cy={last[1]} r="1.75" fill="currentColor" />
     </svg>
   );
@@ -75,25 +81,32 @@ export function StatCard({
   footer?: ReactNode;
 }) {
   return (
-    <Card className="p-8">
+    <Card className="p-[16px]">
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <span className="text-2xs font-medium text-fg-muted">{label}</span>
-          <span className={cn("text-md font-semibold tracking-[-0.02em]", toneText[tone])}>
+          <span
+            className={cn(
+              "text-[21px] font-medium leading-[24px] tracking-[-0.04px]",
+              toneText[tone],
+            )}
+          >
             {value}
           </span>
         </div>
         {Icon ? (
-          <span className="rounded-xs border border-line p-2 text-fg-muted">
+          <span className="flex size-[28px] shrink-0 items-center justify-center rounded-xs bg-control text-fg-muted">
             <Icon aria-hidden="true" className="size-[14px]" />
           </span>
         ) : null}
       </div>
-      <div className="mt-4 flex items-end justify-between gap-4">
-        <div className="text-2xs text-fg-muted">{hint}</div>
+      <div className="mt-[12px] flex items-end justify-between gap-4">
+        <div className="text-2xs leading-4 text-fg-muted">{hint}</div>
         {series && series.length > 1 ? <Sparkline data={series} /> : null}
       </div>
-      {footer ? <div className="mt-4 border-t border-line pt-4">{footer}</div> : null}
+      {footer ? (
+        <div className="mt-[12px] border-t-[0.5px] border-line pt-[12px]">{footer}</div>
+      ) : null}
     </Card>
   );
 }

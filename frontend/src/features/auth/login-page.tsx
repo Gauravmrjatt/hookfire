@@ -68,18 +68,18 @@ export function LoginPage() {
         Skip to form
       </a>
 
-      <header className="flex h-[48px] items-center gap-3 border-b border-line px-4 md:px-8">
+      <header className="flex h-[48px] items-center gap-3 border-b-[0.5px] border-line px-[16px] md:px-[24px]">
         <span
           aria-hidden="true"
-          className="flex size-[22px] items-center justify-center rounded-xs border border-line-strong bg-surface-strong text-[11px] font-semibold text-fg"
+          className="flex size-[22px] items-center justify-center rounded-xs bg-control text-[11px] font-medium text-fg"
         >
           H
         </span>
-        <span className="text-2xs font-semibold text-fg">Hookfire</span>
+        <span className="text-xs font-medium text-fg">Hookfire</span>
         <span className="text-2xs text-fg-muted">Activity console</span>
       </header>
 
-      <main className="flex flex-1 items-center justify-center px-4 py-12">
+      <main className="flex flex-1 items-center justify-center px-[16px] py-12">
         <div className="grid w-full max-w-[920px] gap-8 lg:grid-cols-[minmax(0,1fr)_400px]">
           <section className="hidden flex-col justify-center gap-5 lg:flex" aria-labelledby="login-pitch">
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function LoginPage() {
             </div>
             <h1
               id="login-pitch"
-              className="max-w-[24ch] text-md font-semibold tracking-[-0.02em] text-fg"
+              className="max-w-[24ch] text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-fg"
             >
               Watch every webhook attempt as it happens.
             </h1>
@@ -115,10 +115,10 @@ export function LoginPage() {
 
           <section
             aria-labelledby="connect-heading"
-            className="mx-auto w-full max-w-[400px] rounded-xs border border-line bg-surface-raised/[0.35] p-8 lg:max-w-none"
+            className="mx-auto w-full max-w-[400px] rounded-xs border-[0.5px] border-line bg-surface-raised p-8 lg:max-w-none"
           >
             <div className="mb-6 flex flex-col gap-1">
-              <h1 id="connect-heading" className="text-sm font-semibold tracking-[-0.01em] text-fg">
+              <h1 id="connect-heading" className="text-sm font-medium leading-[20px] tracking-[-0.13px] text-fg">
                 Connect to an engine
               </h1>
               <p className="text-2xs leading-[18px] text-fg-muted">
@@ -182,6 +182,7 @@ export function LoginPage() {
 
               <Button
                 type="submit"
+                variant="primary"
                 loading={probe.kind === "testing"}
                 className="w-full"
               >
@@ -189,12 +190,12 @@ export function LoginPage() {
                 <ArrowRight aria-hidden="true" />
               </Button>
 
-              <p className={cn("text-center text-[10px] leading-[16px] text-fg-muted")}>
+              <p className={cn("text-center text-2xs leading-[16px] text-fg-muted")}>
                 Press <Kbd>Enter</Kbd> to connect.
               </p>
             </form>
 
-            <div className="mt-6 flex flex-col gap-2 border-t border-line pt-4 text-2xs">
+            <div className="mt-6 flex flex-col gap-2 border-t-[0.5px] border-line pt-4 text-2xs">
               <a
                 href="https://github.com/Gauravmrjatt/hookfire#authentication"
                 target="_blank"

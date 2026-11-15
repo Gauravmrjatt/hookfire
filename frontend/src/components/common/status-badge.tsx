@@ -19,7 +19,7 @@ export function StatusBadge({
       <span
         aria-hidden="true"
         className={cn(
-          "size-[6px] shrink-0 rounded-full",
+          "size-[6px] shrink-0 rounded-full shadow-[0_0_6px_currentColor]",
           toneDot[meta.tone],
           (status === "processing" || status === "retrying") && "animate-[hf-pulse_1.8s_ease-in-out_infinite]",
         )}

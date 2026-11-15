@@ -20,7 +20,7 @@ function attemptTone(attempt: DeliveryAttempt) {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-1 border-b border-line py-3 last:border-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+    <div className="flex flex-col gap-1 border-b-[0.5px] border-line py-3 last:border-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
       <dt className="shrink-0 text-2xs text-fg-muted">{label}</dt>
       <dd className="min-w-0 text-xs text-fg sm:text-right">{children}</dd>
     </div>
@@ -35,7 +35,10 @@ export function DeliveryDetail({ id }: { id: string }) {
   if (isLoading) return <LoadingState rows={5} cols={2} />;
   if (error || !data) return <ErrorState error={error} onRetry={() => refetch()} />;
 
-  const { delivery, attempts } = data;
+  const { delivery } = data;
+  // Older engines can return a null attempt list for a delivery that has never
+  // been claimed; treat that as "no attempts" rather than failing to render.
+  const attempts = data.attempts ?? [];
   const canReplay = delivery.status === "dead_letter";
 
   return (
@@ -71,7 +74,7 @@ export function DeliveryDetail({ id }: { id: string }) {
         <Row label="Endpoint">
           <Link
             to={`/endpoints/${delivery.endpoint_id}`}
-            className="focus-ring inline-flex items-center gap-1 rounded-xs font-mono text-2xs text-fg-subtle hover:text-fg hover:underline"
+            className="focus-ring inline-flex items-center gap-1 rounded-xs font-mono text-2xs text-fg-muted hover:text-fg hover:underline"
           >
             {delivery.endpoint_id}
             <ArrowUpRight aria-hidden="true" className="size-[12px]" />
@@ -122,19 +125,19 @@ export function DeliveryDetail({ id }: { id: string }) {
 
       <section aria-labelledby="attempts-heading" className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <h2 id="attempts-heading" className="text-xs font-semibold text-fg">
+          <h2 id="attempts-heading" className="text-sm font-medium leading-[20px] text-fg">
             Attempt log
           </h2>
           <span className="text-2xs text-fg-muted">{attempts.length} recorded</span>
         </div>
 
         {attempts.length === 0 ? (
-          <p className="rounded-xs border border-line bg-surface-raised/40 p-4 text-2xs text-fg-muted">
+          <p className="rounded-xs border-[0.5px] border-line bg-control p-4 text-2xs text-fg-muted">
             No attempt has been recorded yet. The dispatcher will claim this
             delivery when it is due.
           </p>
         ) : (
-          <ol className="flex flex-col gap-4 border-l border-line pl-6">
+          <ol className="flex flex-col gap-4 border-l-[0.5px] border-line pl-6">
             {attempts.map((attempt) => (
               <li key={attempt.id} className="relative flex flex-col gap-1">
                 <span

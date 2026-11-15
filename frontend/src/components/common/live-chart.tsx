@@ -1,9 +1,14 @@
+import { useId } from "react";
+
 import { cn } from "@/lib/utils";
 
 /**
  * A dependency-free sparkline chart. The engine exposes counters, so charts
  * plot a session-local window; that is stated in the surrounding UI rather
  * than implied as historical data.
+ *
+ * Styling follows the console chart: 11/530 axis text in a 21px hairline bar,
+ * a dashed 0.5px grid, and a 1.5px line over a fading area fill.
  */
 export function LiveChart({
   data,
@@ -22,9 +27,10 @@ export function LiveChart({
   emptyHint?: string;
   className?: string;
 }) {
+  const gradientId = useId();
   const width = 600;
   const padTop = 8;
-  const padBottom = 18;
+  const padBottom = 8;
   const plotHeight = height - padTop - padBottom;
   const latest = data.length > 0 ? data[data.length - 1] : 0;
   const max = Math.max(...data, 0.0001);
@@ -39,15 +45,18 @@ export function LiveChart({
 
   if (data.length < 2) {
     return (
-      <div
-        className={cn(
-          "flex items-center justify-center rounded-xs border border-line bg-surface",
-          className,
-        )}
-        style={{ height }}
-      >
-        <span className="text-2xs text-fg-muted">{emptyHint}</span>
-      </div>
+      <figure className={cn("flex flex-col", className)}>
+        <div className="flex items-baseline justify-between gap-4">
+          <figcaption className="text-2xs font-medium text-fg-muted">{label}</figcaption>
+          <span className={cn("text-xs font-medium", toneClass)}>—</span>
+        </div>
+        <div
+          className="mt-[8px] flex items-center justify-center rounded-xs bg-control"
+          style={{ height }}
+        >
+          <span className="text-2xs font-medium text-fg-muted">{emptyHint}</span>
+        </div>
+      </figure>
     );
   }
 
@@ -63,9 +72,9 @@ export function LiveChart({
   const area = `${line} L${width},${padTop + plotHeight} L0,${padTop + plotHeight} Z`;
 
   return (
-    <figure className={cn("flex flex-col gap-2", className)}>
+    <figure className={cn("flex flex-col", className)}>
       <div className="flex items-baseline justify-between gap-4">
-        <figcaption className="text-2xs text-fg-muted">{label}</figcaption>
+        <figcaption className="text-2xs font-medium text-fg-muted">{label}</figcaption>
         <span className={cn("text-xs font-medium", toneClass)}>{format(latest)}</span>
       </div>
 
@@ -76,10 +85,17 @@ export function LiveChart({
         width="100%"
         height={height}
         preserveAspectRatio="none"
-        className={cn("overflow-visible rounded-xs border border-line bg-surface", toneClass)}
+        className={cn("mt-[8px] overflow-visible", toneClass)}
         fill="none"
       >
-        {[0.25, 0.5, 0.75].map((fraction) => (
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="currentColor" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {[0, 0.25, 0.5, 0.75].map((fraction) => (
           <line
             key={fraction}
             x1={0}
@@ -87,12 +103,13 @@ export function LiveChart({
             y1={padTop + plotHeight * fraction}
             y2={padTop + plotHeight * fraction}
             stroke="currentColor"
-            strokeOpacity="0.08"
-            strokeWidth="1"
+            strokeOpacity="0.16"
+            strokeWidth="0.5"
+            strokeDasharray="3 4"
             vectorEffect="non-scaling-stroke"
           />
         ))}
-        <path d={area} fill="currentColor" opacity="0.08" />
+        <path d={area} fill={`url(#${gradientId})`} />
         <path
           d={line}
           stroke="currentColor"
@@ -103,11 +120,10 @@ export function LiveChart({
         />
       </svg>
 
-      <div className="flex items-center justify-between text-[10px] text-fg-muted">
+      {/* The console's axis strip: a 21px layer-01 bar with hairline borders. */}
+      <div className="mt-[8px] flex h-[21px] items-center justify-between rounded-xs border-[0.5px] border-line bg-surface-raised px-[8px] text-[11px] font-medium leading-4 text-fg-muted">
         <span>oldest</span>
-        <span>
-          peak {format(max)}
-        </span>
+        <span>peak {format(max)}</span>
         <span>now</span>
       </div>
     </figure>

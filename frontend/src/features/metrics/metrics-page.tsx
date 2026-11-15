@@ -104,7 +104,7 @@ export function MetricsPage() {
         description="Runtime health from the engine's instrumentation. Charts are a session-local window built from /v1/stats polling — Prometheus remains the source of truth for history and alerting."
         actions={
           <>
-            <div className="flex h-[32px] items-center gap-3 rounded-xs border border-line bg-surface-raised/40 px-3">
+            <div className="flex h-[32px] items-center gap-3 rounded-xs border-[0.5px] border-line bg-control px-3">
               <label htmlFor="metrics-live" className="text-2xs text-fg-muted">
                 Live
               </label>
@@ -196,9 +196,9 @@ export function MetricsPage() {
       </div>
 
       <Card className="overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b-[0.5px] border-line p-4">
           <div className="flex flex-col gap-1">
-            <h2 className="text-xs font-semibold text-fg">Prometheus instruments</h2>
+            <h2 className="text-sm font-medium leading-[20px] text-fg">Prometheus instruments</h2>
             <p className="text-2xs text-fg-muted">
               Low-cardinality labels only — never event ids, URLs, or payloads.
             </p>
@@ -236,7 +236,7 @@ export function MetricsPage() {
       <Card className="p-8">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex flex-col gap-1">
-            <h2 className="text-xs font-semibold text-fg">Scrape configuration</h2>
+            <h2 className="text-sm font-medium leading-[20px] text-fg">Scrape configuration</h2>
             <p className="text-2xs text-fg-muted">
               Point Prometheus at the engine. The endpoint is public by default —
               restrict it at the network layer in production.
@@ -244,7 +244,7 @@ export function MetricsPage() {
           </div>
           <CopyButton value={SCRAPE_CONFIG} label="Copy scrape config" />
         </div>
-        <pre className="mt-4 overflow-x-auto rounded-xs border border-line bg-surface p-4 font-mono text-2xs leading-[18px] text-fg-subtle">
+        <pre className="mt-4 overflow-x-auto rounded-xs border-[0.5px] border-line bg-surface p-4 font-mono text-2xs leading-[18px] text-fg-subtle">
           <code>{SCRAPE_CONFIG}</code>
         </pre>
       </Card>

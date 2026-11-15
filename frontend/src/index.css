@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* The console is dark-native: there is one theme, and it is black. */
+/* The console is dark-native: there is one theme, and it is #161616. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -38,10 +38,23 @@
   --spacing-7: 12px;
   --spacing-8: 15px;
 
-  /* Elevation — the single sanctioned shadow. */
+  /* Elevation — the console's four layers: control, raised, floating, overlay.
+     `shadow-1` is the input/neutral-button hairline; the rest are for layers. */
   --shadow-1: rgba(0, 0, 0, 0.4) 0px 1px 2px 0px,
     rgba(255, 255, 255, 0.2) 0px 0px 0px 0.5px,
     rgba(255, 255, 255, 0.1) 0px -0.5px 0px 0px;
+  --shadow-raised: rgba(0, 0, 0, 0.3) 0px 2px 4px 0px,
+    rgba(0, 0, 0, 0.3) 0px 1px 2px 0px,
+    rgba(255, 255, 255, 0.16) 0px 0px 0px 0.5px,
+    rgba(255, 255, 255, 0.06) 0px -0.5px 0px 0px;
+  --shadow-floating: rgba(0, 0, 0, 0.3) 0px 8px 16px 0px,
+    rgba(0, 0, 0, 0.3) 0px 4px 8px 0px,
+    rgba(255, 255, 255, 0.16) 0px 0px 0px 0.5px,
+    rgba(255, 255, 255, 0.06) 0px -0.5px 0px 0px;
+  --shadow-overlay: rgba(0, 0, 0, 0.3) 0px 16px 32px 0px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px 0px,
+    rgba(255, 255, 255, 0.16) 0px 0px 0px 0.5px,
+    rgba(255, 255, 255, 0.06) 0px -0.5px 0px 0px;
 
   /* Semantic color tokens (brand palette + status extensions). */
   --color-surface: var(--surface-base);
@@ -86,8 +99,10 @@
 }
 
 :root {
-  /* Brand tokens — the only place raw values may appear. */
-  --surface-base: #000000;
+  /* Brand tokens — the only place raw values may appear. Values mirror the
+     OpenCode console's `--v2-*` palette: base #161616, layers 242424/2e2e2e/
+     3a3a3a/5c5c5c, text fafafa/aeaeae/808080, focus #6b8fff. */
+  --surface-base: #161616;
   --surface-raised: #242424;
   --surface-strong: #2e2e2e;
   --surface-muted: #ffffff;
@@ -99,23 +114,22 @@
   --control-active: rgba(255, 255, 255, 0.16);
 
   --text-primary: #fafafa;
-  --text-secondary: #808080;
-  --text-tertiary: #aeaeae;
+  --text-secondary: #aeaeae;
+  --text-tertiary: #808080;
   --text-inverse: #a2bcff;
 
-  /* Derived line tokens: the palette ships surfaces, not borders.
-     line-strong is deliberately >= 3:1 against surface so it can identify an
-     interactive control on its own (WCAG 1.4.11); line-subtle is decorative
-     separation only and must never be the sole boundary of a control. */
+  /* Derived line tokens: the console uses 8% for structure and 20% for strong
+     boundaries. */
   --line-subtle: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.38);
-  --focus-ring: #a2bcff;
+  --line-strong: rgba(255, 255, 255, 0.2);
+  --focus-ring: #6b8fff;
 
-  /* Status extensions required by delivery states (documented in guidelines). */
-  --status-success: #3fb950;
-  --status-warning: #d29922;
-  --status-danger: #f85149;
-  --status-info: #a2bcff;
+  /* Status extensions required by delivery states (documented in guidelines);
+     values are the console's dark-theme state foregrounds. */
+  --status-success: #6bd586;
+  --status-warning: #f2cf76;
+  --status-danger: #f17471;
+  --status-info: #7698fd;
   --status-neutral: #808080;
 
   --radius: 6px;
@@ -141,6 +155,7 @@
     font-size: 13px;
     font-weight: 440;
     line-height: 20px;
+    letter-spacing: -0.04px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -155,7 +170,7 @@
   }
 
   ::selection {
-    background: rgba(162, 188, 255, 0.24);
+    background: rgba(107, 143, 255, 0.24);
     color: var(--text-primary);
   }
 
@@ -216,6 +231,69 @@
   outline: 1px solid var(--status-danger);
   outline-offset: -1px;
   box-shadow: none;
+}
+
+/* Console segmented control — the tab pattern used across the OpenCode
+   console: a 28px layer-02 track, 13/530 labels, and a 6% white indicator with
+   a top sheen and the neutral-button elevation. */
+.segmented-track {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  box-shadow: 0 0 0 0.5px var(--surface-strong);
+  user-select: none;
+}
+
+.segmented-item {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: max-content;
+  margin: 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 530;
+  line-height: 20px;
+  letter-spacing: -0.04px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 150ms ease-out, background 85ms ease-out;
+}
+
+.segmented-item:hover:not(:disabled):not([data-state="active"]) {
+  color: var(--text-primary);
+}
+
+.segmented-item[data-state="active"] {
+  background:
+    linear-gradient(180deg, var(--control-base) 0%, transparent 100%),
+    var(--control-base);
+  box-shadow: var(--shadow-1);
+  color: var(--text-primary);
+}
+
+.segmented-item:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.segmented-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 @keyframes hf-shimmer {

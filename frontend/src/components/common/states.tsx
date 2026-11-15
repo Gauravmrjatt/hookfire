@@ -27,11 +27,11 @@ export function EmptyState({
       )}
     >
       {Icon ? (
-        <span className="rounded-xs border border-line bg-surface-raised/60 p-4">
+        <span className="rounded-xs border-[0.5px] border-line bg-control p-4">
           <Icon aria-hidden="true" className="size-[18px] text-fg-muted" />
         </span>
       ) : null}
-      <h2 className="text-xs font-semibold text-fg">{title}</h2>
+      <h2 className="text-sm font-medium leading-[20px] text-fg">{title}</h2>
       {description ? (
         <p className="max-w-[46ch] text-2xs leading-[18px] text-fg-muted">{description}</p>
       ) : null}
@@ -54,7 +54,7 @@ export function ErrorState({
 
   return (
     <div className={cn("flex flex-col items-center gap-3 px-8 py-16 text-center", className)}>
-      <h2 className="text-xs font-semibold text-fg">
+      <h2 className="text-sm font-medium leading-[20px] text-fg">
         {unauthorized ? "Session expired" : "Could not load this view"}
       </h2>
       <p className="max-w-[52ch] text-2xs leading-[18px] text-fg-muted">

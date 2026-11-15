@@ -78,12 +78,12 @@ export function EndpointsPage() {
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {endpoints.data?.map((endpoint) => (
             <li key={endpoint.id}>
-              <Card className="flex h-full flex-col p-8 transition-colors duration-[150ms] hover:border-line-strong">
+              <Card className="flex h-full flex-col p-[16px] transition-colors duration-[150ms] hover:bg-surface-strong">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 flex-col gap-1">
                     <Link
                       to={`/endpoints/${endpoint.id}`}
-                      className="focus-ring truncate rounded-xs text-xs font-semibold text-fg hover:text-accent-ink"
+                      className="focus-ring truncate rounded-xs text-sm font-medium leading-[20px] text-fg hover:text-accent-ink"
                     >
                       {endpoint.name}
                     </Link>
@@ -98,7 +98,7 @@ export function EndpointsPage() {
 
                 <div className="mt-4 flex items-start gap-2">
                   <code
-                    className="min-w-0 flex-1 truncate font-mono text-2xs text-fg-subtle"
+                    className="min-w-0 flex-1 truncate font-mono text-2xs text-fg-muted"
                     title={endpoint.url}
                   >
                     {prettyUrl(endpoint.url)}
@@ -106,7 +106,7 @@ export function EndpointsPage() {
                   <CopyButton value={endpoint.url} label="Copy endpoint URL" />
                 </div>
 
-                <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-line pt-4 text-2xs">
+                <dl className="mt-5 grid grid-cols-2 gap-3 border-t-[0.5px] border-line pt-4 text-2xs">
                   <div className="flex flex-col gap-1">
                     <dt className="text-fg-muted">Rate limit</dt>
                     <dd className="text-fg">
@@ -123,7 +123,7 @@ export function EndpointsPage() {
                   </div>
                 </dl>
 
-                <div className="mt-5 flex items-center gap-2 border-t border-line pt-4">
+                <div className="mt-5 flex items-center gap-2 border-t-[0.5px] border-line pt-4">
                   <Button size="sm" variant="outline" asChild className="flex-1">
                     <Link to={`/endpoints/${endpoint.id}`}>
                       Open endpoint

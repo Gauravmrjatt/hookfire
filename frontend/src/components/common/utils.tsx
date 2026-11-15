@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 export function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-xs border border-line-strong bg-surface px-1 font-sans text-[10px] font-medium text-fg-muted">
+    <kbd className="inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[4px] bg-control px-[4px] font-sans text-[11px] font-medium text-fg-muted">
       {children}
     </kbd>
   );
@@ -150,7 +150,7 @@ export function Pagination({
   return (
     <nav
       aria-label="Pagination"
-      className="flex items-center justify-between gap-4 border-t border-line px-8 py-4"
+      className="flex items-center justify-between gap-4 border-t-[0.5px] border-line px-8 py-4"
     >
       <p className="text-2xs text-fg-muted">
         Showing <span className="text-fg">{start}</span>–

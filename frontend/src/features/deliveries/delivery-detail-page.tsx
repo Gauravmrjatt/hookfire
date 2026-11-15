@@ -21,9 +21,9 @@ export function DeliveryDetailPage() {
           <ArrowLeft aria-hidden="true" className="size-[13px]" />
           Deliveries
         </Link>
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-line pb-8">
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b-[0.5px] border-line pb-[24px]">
           <div className="flex min-w-0 flex-col gap-1">
-            <h1 className="text-md font-semibold tracking-[-0.02em] text-fg">
+            <h1 className="text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-fg">
               Delivery detail
             </h1>
             <p className="text-2xs text-fg-muted">

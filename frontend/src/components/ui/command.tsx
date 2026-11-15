@@ -18,7 +18,8 @@ export function CommandDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showClose={false}
-        className="top-[18%] max-w-[560px] translate-y-0 overflow-hidden p-0"
+        style={{ padding: 0 }}
+        className="top-[18%] max-w-[560px] translate-y-0 overflow-hidden"
         aria-label="Command palette"
       >
         <DialogTitle className="sr-only">Command palette</DialogTitle>
@@ -26,8 +27,8 @@ export function CommandDialog({
           loop
           className={cn(
             "flex max-h-[440px] flex-col overflow-hidden",
-            "[&_[cmdk-group-heading]]:px-4 [&_[cmdk-group-heading]]:py-2",
-            "[&_[cmdk-group-heading]]:text-2xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-fg-subtle",
+            "[&_[cmdk-group-heading]]:px-[12px] [&_[cmdk-group-heading]]:py-[4px]",
+            "[&_[cmdk-group-heading]]:text-2xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-fg-muted",
           )}
         >
           {children}
@@ -42,11 +43,11 @@ export function CommandInput({
   ...props
 }: React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>) {
   return (
-    <div className="flex items-center gap-3 border-b border-line px-4">
+    <div className="flex items-center gap-[8px] border-b-[0.5px] border-line px-[12px]">
       <Search aria-hidden="true" className="size-[15px] shrink-0 text-fg-muted" />
       <CommandPrimitive.Input
         className={cn(
-          "h-[40px] w-full bg-transparent text-xs text-fg outline-none placeholder:text-fg-subtle",
+          "h-[40px] w-full bg-transparent text-xs text-fg outline-none placeholder:text-fg-muted",
           className,
         )}
         {...props}
@@ -61,7 +62,7 @@ export function CommandList({
 }: React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>) {
   return (
     <CommandPrimitive.List
-      className={cn("max-h-[360px] overflow-y-auto overflow-x-hidden p-1", className)}
+      className={cn("max-h-[360px] overflow-y-auto overflow-x-hidden p-[4px]", className)}
       {...props}
     />
   );
@@ -72,7 +73,7 @@ export function CommandEmpty(
 ) {
   return (
     <CommandPrimitive.Empty
-      className="py-8 text-center text-2xs text-fg-subtle"
+      className="py-[32px] text-center text-xs text-fg-muted"
       {...props}
     />
   );
@@ -92,9 +93,9 @@ export function CommandItem({
   return (
     <CommandPrimitive.Item
       className={cn(
-        "flex cursor-default select-none items-center gap-3 rounded-xs px-3 py-2 text-xs text-fg outline-none",
+        "flex h-[28px] cursor-default select-none items-center gap-[8px] rounded-[4px] px-[12px] text-xs text-fg outline-none",
         "transition-colors duration-[85ms]",
-        "data-[selected=true]:bg-surface-strong",
+        "data-[selected=true]:bg-control",
         "[&_svg]:size-[14px] [&_svg]:text-fg-muted",
         className,
       )}
@@ -104,5 +105,5 @@ export function CommandItem({
 }
 
 export function CommandShortcut({ children }: { children: React.ReactNode }) {
-  return <span className="ml-auto text-2xs text-fg-subtle">{children}</span>;
+  return <span className="ml-auto text-2xs text-fg-muted">{children}</span>;
 }

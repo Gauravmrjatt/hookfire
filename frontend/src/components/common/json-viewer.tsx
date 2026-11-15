@@ -26,8 +26,8 @@ export function JsonViewer({
   const long = lines.length > 12;
 
   return (
-    <div className={cn("overflow-hidden rounded-xs border border-line bg-surface", className)}>
-      <div className="flex items-center justify-between gap-4 border-b border-line px-4 py-2">
+    <div className={cn("overflow-hidden rounded-xs border-[0.5px] border-line bg-surface", className)}>
+      <div className="flex items-center justify-between gap-4 border-b-[0.5px] border-line px-4 py-2">
         <span className="text-2xs font-medium text-fg-muted">{label}</span>
         <div className="flex items-center gap-1">
           {long ? (
@@ -49,7 +49,7 @@ export function JsonViewer({
         </div>
       </div>
       <pre
-        className="overflow-auto p-4 font-mono text-2xs leading-[18px] text-fg-subtle"
+        className="overflow-auto p-4 font-mono text-2xs leading-[18px] text-fg-muted"
         style={{
           maxHeight: expanded ? 520 : collapsedHeight,
           scrollbarWidth: "thin",

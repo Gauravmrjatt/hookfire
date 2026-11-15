@@ -96,7 +96,7 @@ export function ActivityPage() {
         description="Every delivery the engine has attempted, newest first. Filters are server-side; the feed refreshes every five seconds while live."
         actions={
           <>
-            <div className="flex h-[32px] items-center gap-3 rounded-xs border border-line bg-surface-raised/40 px-3">
+            <div className="flex h-[32px] items-center gap-3 rounded-xs border-[0.5px] border-line bg-control px-3">
               <label htmlFor="live-toggle" className="text-2xs text-fg-muted">
                 Live
               </label>
@@ -161,7 +161,7 @@ export function ActivityPage() {
       </section>
 
       <Card className="overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-line p-4 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex flex-col gap-3 border-b-[0.5px] border-line p-4 xl:flex-row xl:items-center xl:justify-between">
           <Tabs
             value={statusFilter}
             onValueChange={(value) => {
@@ -271,7 +271,7 @@ export function ActivityPage() {
                       <TableCell className="hidden max-w-[240px] md:table-cell">
                         <Link
                           to={`/endpoints/${delivery.endpoint_id}`}
-                          className="focus-ring block truncate rounded-xs text-fg-subtle hover:text-fg"
+                          className="focus-ring block truncate rounded-xs text-fg-muted hover:text-fg"
                           title={delivery.endpoint_url}
                         >
                           {delivery.endpoint_name}
@@ -353,7 +353,7 @@ export function ActivityPage() {
         }}
       >
         <SheetContent aria-describedby={undefined}>
-          <DialogTitle className="mb-6 text-sm font-semibold text-fg">
+          <DialogTitle className="mb-[16px] text-sm font-medium leading-[20px] tracking-[-0.13px] text-fg">
             Delivery detail
           </DialogTitle>
           {selectedDelivery ? <DeliveryDetail id={selectedDelivery} /> : null}

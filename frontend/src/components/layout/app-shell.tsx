@@ -80,14 +80,14 @@ export function AppShell() {
           onSendEvent={() => setSendOpen(true)}
         />
 
-        <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-8 md:px-8">
-          <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-8">
+        <main id="main-content" tabIndex={-1} className="flex-1 px-[16px] py-[24px] md:px-[24px]">
+          <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-[24px]">
             <Outlet />
           </div>
         </main>
 
-        <footer className="border-t border-line px-4 py-4 md:px-8">
-          <div className="mx-auto flex w-full max-w-[1400px] flex-wrap items-center gap-4 text-[10px] text-fg-muted">
+        <footer className="border-t-[0.5px] border-line px-[16px] py-[16px] md:px-[24px]">
+          <div className="mx-auto flex w-full max-w-[1400px] flex-wrap items-center gap-4 text-2xs text-fg-subtle">
             <span>Hookfire Activity console</span>
             <span aria-hidden="true">·</span>
             <span>at-least-once delivery</span>
@@ -109,7 +109,7 @@ export function AppShell() {
       </div>
 
       <Dialog open={navOpen} onOpenChange={setNavOpen}>
-        <SheetContent showClose={false} className="max-w-[280px] p-0">
+        <SheetContent showClose={false} style={{ padding: 0 }} className="max-w-[280px]">
           <DialogTitle className="sr-only">Navigation</DialogTitle>
           <NavContent onNavigate={() => setNavOpen(false)} />
         </SheetContent>

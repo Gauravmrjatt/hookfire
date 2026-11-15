@@ -110,7 +110,7 @@ export function CommandMenu({
               >
                 <Webhook aria-hidden="true" />
                 <span className="truncate">{endpoint.name}</span>
-                <span className="ml-auto truncate text-[10px] text-fg-subtle">
+                <span className="ml-auto truncate text-[10px] text-fg-muted">
                   {endpoint.active ? "active" : "inactive"}
                 </span>
               </CommandItem>
@@ -118,7 +118,7 @@ export function CommandMenu({
           </CommandGroup>
         ) : null}
       </CommandList>
-      <div className="flex items-center gap-4 border-t border-line px-4 py-2 text-[10px] text-fg-subtle">
+      <div className="flex items-center gap-4 border-t-[0.5px] border-line px-4 py-2 text-[10px] text-fg-muted">
         <span className="flex items-center gap-1">
           <Kbd>↑</Kbd>
           <Kbd>↓</Kbd> navigate

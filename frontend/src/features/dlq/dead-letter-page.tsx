@@ -78,19 +78,19 @@ export function DeadLetterPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xs border border-line bg-surface-raised/[0.35] p-8">
+        <div className="rounded-xs border-[0.5px] border-line bg-surface-raised p-8">
           <p className="text-2xs text-fg-muted">In dead letter</p>
-          <p className="mt-1 text-md font-semibold tracking-[-0.02em] text-danger">
+          <p className="mt-1 text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-danger">
             {stats.data?.dead_letter_count ?? items.length}
           </p>
         </div>
-        <div className="rounded-xs border border-line bg-surface-raised/[0.35] p-8">
+        <div className="rounded-xs border-[0.5px] border-line bg-surface-raised p-8">
           <p className="text-2xs text-fg-muted">On this page</p>
-          <p className="mt-1 text-md font-semibold tracking-[-0.02em] text-fg">
+          <p className="mt-1 text-[21px] font-medium leading-[24px] tracking-[-0.04px] text-fg">
             {items.length}
           </p>
         </div>
-        <div className="rounded-xs border border-line bg-surface-raised/[0.35] p-8">
+        <div className="rounded-xs border-[0.5px] border-line bg-surface-raised p-8">
           <p className="text-2xs text-fg-muted">Replay semantics</p>
           <p className="mt-1 text-xs text-fg">Same event id, new attempt</p>
         </div>
@@ -135,7 +135,7 @@ export function DeadLetterPage() {
                       <TableCell className="max-w-[200px]">
                         <Link
                           to={`/events/${delivery.event_id}`}
-                          className="focus-ring block truncate rounded-xs font-mono text-2xs text-fg-subtle hover:text-fg"
+                          className="focus-ring block truncate rounded-xs font-mono text-2xs text-fg-muted hover:text-fg"
                         >
                           {delivery.event_id}
                         </Link>
@@ -146,7 +146,7 @@ export function DeadLetterPage() {
                       <TableCell className="hidden max-w-[180px] md:table-cell">
                         <Link
                           to={`/endpoints/${delivery.endpoint_id}`}
-                          className="focus-ring block truncate rounded-xs text-fg-subtle hover:text-fg"
+                          className="focus-ring block truncate rounded-xs text-fg-muted hover:text-fg"
                         >
                           {delivery.endpoint_id}
                         </Link>
@@ -215,7 +215,7 @@ export function DeadLetterPage() {
         }}
       >
         <SheetContent aria-describedby={undefined}>
-          <DialogTitle className="mb-6 text-sm font-semibold text-fg">
+          <DialogTitle className="mb-[16px] text-sm font-medium leading-[20px] tracking-[-0.13px] text-fg">
             Delivery detail
           </DialogTitle>
           {selected ? <DeliveryDetail id={selected} /> : null}
