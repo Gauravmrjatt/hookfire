@@ -68,7 +68,7 @@ The reference surface is the **live** OpenCode console (`opencode.ai/console`), 
 | Structural hairline | `rgba(255,255,255,.08)` at `0.5px` | `#222222` at `1px` |
 | Radii | `6px` containers, `4px` inner items | `12px` cards / `8px` controls |
 | Family | Inter, `13/440/20`, tracking `-0.04px` | system UI stack |
-| Tabs | 28 px segmented control | 2 px underline |
+| Tabs | 2 px underline in a 48 px bar | 28 px segmented control (earlier build) |
 | Weights | `440` and `530` | `400` / `600` |
 
 **If the live console changes, this table changes first.** A screenshot or CSS bundle is evidence; a remembered hex value is not. The approximation column is retained only to explain why older drafts of this document differ — do not implement it.
@@ -135,7 +135,7 @@ Every token below is implemented in `src/index.css`. Components must use these n
 |---|---|---|---|---|
 | `surface` | `--surface-base` | `bg-surface` | Page canvas, field fill, code blocks, sheets | Content grouping |
 | `surface-raised` | `--surface-raised` | `bg-surface-raised` | Cards, dialogs, menus, toasts, chart axis strips | Full-page backgrounds |
-| `surface-strong` | `--surface-strong` | `bg-surface-strong` | Segmented-control track, switch track, tooltip fill, icon chips | Page canvas |
+| `surface-strong` | `--surface-strong` | `bg-surface-strong` | Switch track, tooltip fill, icon chips | Page canvas |
 | `surface-inverse` | `--surface-muted` | `bg-surface-inverse` | `primary` (white) button fill | Large areas |
 | `control` | `--control-base` | `bg-control` | `default` (neutral) button fill, icon actions, menu/row hover, field hover wash | Page canvas |
 | `control-hover` | `--control-hover` | `bg-control-hover` | Hover fill for `control` | Default state |
@@ -206,7 +206,7 @@ If a pair is not in this table, it **must** be measured before shipping. "It loo
 
 **Tracking:** `-0.04px` is the default everywhere; dialog titles use `-0.13px` (the console's tighter overlay headline). Do not introduce `em`-based tracking — the brand value is px.
 
-**Numerals:** tables and metrics **must** use `font-variant-numeric: tabular-nums` (set globally on `table`, on segmented tabs, and on metric values) so columns align.
+**Numerals:** tables and metrics **must** use `font-variant-numeric: tabular-nums` (set globally on `table`, on tabs, and on metric values) so columns align.
 
 **Rules:**
 - **Must** use exactly one 21 px H1 per page.
@@ -246,7 +246,7 @@ The brand scale maps to Tailwind numeric padding/gap/margin utilities:
 
 ### 2.8 Radius, elevation, borders
 
-- **Radius:** `6px` for every container and control — cards, dialogs, sheets, inputs, buttons, badges, popovers, segmented tracks. Inner hit targets that sit *inside* a 6 px panel (menu items, dialog close) use `4px` so the nesting reads correctly. `rounded-full` is permitted only for status dots, avatars, switch tracks/thumbs, and scrollbar thumbs.
+- **Radius:** `6px` for every container and control — cards, dialogs, sheets, inputs, buttons, badges, popovers, tab labels. Inner hit targets that sit *inside* a 6 px panel (menu items, dialog close) use `4px` so the nesting reads correctly. `rounded-full` is permitted only for status dots, avatars, switch tracks/thumbs, and scrollbar thumbs.
 - **Elevation:** four console-derived steps. `shadow-1` draws the 0.5 px hairline for fields and the neutral button; `shadow-floating` is for menus and tooltips; `shadow-overlay` is for dialogs, sheets, and toasts. `shadow-raised` exists for panels that separate by light rather than a border and is currently unused. **Must not** apply an elevation to cards, tables, or hover states.
 - **Borders:** `0.5px` `border-line` (8% white) for all structural hairlines — cards, tables, top bar, page-header rule, axis strips. `1px` `border-line-strong` (20% white) for `outline` buttons and switch tracks. Text fields and selects have **no** border — their boundary is the 0.5 px hairline inside `shadow-1`. **Must not** combine a border and an elevation on the same box; that draws two visible edges.
 
@@ -530,7 +530,7 @@ Every interactive component below defines **default, hover, focus-visible, activ
 
 ### 3.11 Tabs, filters, search, pagination
 
-**Tabs:** Radix wrapped in the console's segmented control. The track is 28 px tall, `surface-strong` (#2e2e2e), radius 6 px, and scrolls horizontally rather than wrapping. Items are 28 px tall with `12px` horizontal padding, `13/20` at weight 530, tabular numerals. Inactive labels are `fg-muted` and shift to `fg` on hover; the active item carries a 6% white fill plus a top-down sheen and `shadow-1`, and its label is `fg`. `aria-label` on the list ("Filter by delivery status").
+**Tabs:** Radix with the console's underline treatment. The track is transparent and 28 px tall, and scrolls horizontally rather than wrapping. Items are 28 px tall with `8px` horizontal padding, `13/20` at weight 530, tabular numerals, and a `6px 6px 0 0` radius for the hover target. Inactive labels are `fg-muted` and shift to `fg` on hover; the active label is `fg` and carries a **2 px `currentColor` underline** flush to the track's bottom edge. `aria-label` on the list ("Filter by delivery status").
 
 **Search:** 260 px input with a leading search icon and a clear button. Debounce 300 ms; the query is server-side; the clear button is a ≥ 24 px target labelled "Clear search". `Escape` clears the field.
 

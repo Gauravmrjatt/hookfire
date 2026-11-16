@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
 export const Tabs = TabsPrimitive.Root;
 
 /**
- * The console's segmented control: a fixed 28px layer-02 track that holds
- * equal-height labels. The track scrolls horizontally rather than wrapping when
- * a page supplies more filters than fit.
+ * The console's tab bar: 28px labels in a transparent track, with the active
+ * tab marked by a 2px underline. The track scrolls horizontally rather than
+ * wrapping when a page supplies more filters than fit.
  */
 export function TabsList({
   className,
@@ -16,7 +16,7 @@ export function TabsList({
 }: React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>) {
   return (
     <TabsPrimitive.List
-      className={cn("segmented-track overflow-x-auto", className)}
+      className={cn("tab-track overflow-x-auto", className)}
       {...props}
     />
   );
@@ -26,7 +26,7 @@ export function TabsTrigger({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>) {
-  return <TabsPrimitive.Trigger className={cn("segmented-item", className)} {...props} />;
+  return <TabsPrimitive.Trigger className={cn("tab-item", className)} {...props} />;
 }
 
 export function TabsContent({

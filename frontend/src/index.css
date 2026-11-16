@@ -233,24 +233,23 @@
   box-shadow: none;
 }
 
-/* Console segmented control — the tab pattern used across the OpenCode
-   console: a 28px layer-02 track, 13/530 labels, and a 6% white indicator with
-   a top sheen and the neutral-button elevation. */
-.segmented-track {
+/* Console tabs — underline navigation. The live console puts 28px labels in a
+   48px bar and marks the active tab with a 2px bar under the label; the track
+   itself has no fill. */
+.tab-track {
   box-sizing: border-box;
   display: inline-flex;
-  align-items: center;
+  align-items: stretch;
   height: 28px;
   max-width: 100%;
   padding: 0;
   border: 0;
-  border-radius: var(--radius);
-  background: var(--surface-strong);
-  box-shadow: 0 0 0 0.5px var(--surface-strong);
+  background: transparent;
   user-select: none;
 }
 
-.segmented-item {
+.tab-item {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   flex: 0 0 auto;
@@ -259,9 +258,9 @@
   height: 28px;
   min-width: max-content;
   margin: 0;
-  padding: 0 12px;
+  padding: 0 8px;
   border: 0;
-  border-radius: var(--radius);
+  border-radius: 6px 6px 0 0;
   background: transparent;
   color: var(--text-secondary);
   font-size: 13px;
@@ -271,27 +270,34 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   cursor: pointer;
-  transition: color 150ms ease-out, background 85ms ease-out;
+  transition: color 85ms ease-out, background-color 85ms ease-out;
 }
 
-.segmented-item:hover:not(:disabled):not([data-state="active"]) {
+.tab-item:hover:not(:disabled):not([data-state="active"]) {
   color: var(--text-primary);
 }
 
-.segmented-item[data-state="active"] {
-  background:
-    linear-gradient(180deg, var(--control-base) 0%, transparent 100%),
-    var(--control-base);
-  box-shadow: var(--shadow-1);
+.tab-item[data-state="active"] {
   color: var(--text-primary);
 }
 
-.segmented-item:focus-visible {
+.tab-item[data-state="active"]::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.tab-item:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 1px;
 }
 
-.segmented-item:disabled {
+.tab-item:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
