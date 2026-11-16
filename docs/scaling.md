@@ -78,5 +78,8 @@ method, config and caveats in [performance.md](performance.md):
 Both runs: 1,000,000/1,000,000 delivered, 0 failed, 0 dead letters. Scaling
 from 10 to 40 workers on one node is **sublinear** (1.47×), so stage 2
 horizontal replicas — not more goroutines per process — is the next lever.
-Requires `DISPATCHER_INTERVAL=50ms CLAIM_BATCH_SIZE=2000`; the defaults
-(1s/64) cap the claim loop at ~64 deliveries/s.
+Measured with `DISPATCHER_INTERVAL=50ms CLAIM_BATCH_SIZE=2000`. Those were
+needed before the dispatcher loop was fixed: it used to claim one batch per
+tick, so the stock 1s/64 defaults capped the engine at ~64 deliveries/s. The
+loop now drains full batches back-to-back, so batch size costs round-trips
+rather than throughput.

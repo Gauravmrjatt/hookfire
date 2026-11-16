@@ -121,6 +121,22 @@ func (p *Pool) dispatchLoop(ctx context.Context) {
 	defer ticker.Stop()
 
 	for {
+		// Keep claiming while the store hands back full batches. A full batch
+		// means more due work is almost certainly waiting, so sleeping until
+		// the next tick here would pin throughput at ClaimBatchSize per
+		// DispatcherInterval no matter how many workers sit idle. The channel
+		// still provides backpressure: once it is full dispatchOnce reports
+		// not-full and the loop falls through to the ticker.
+		for {
+			_, full := p.dispatchOnce(ctx)
+			if ctx.Err() != nil {
+				return
+			}
+			if !full {
+				break
+			}
+		}
+
 		select {
 		case <-ctx.Done():
 			return
@@ -133,14 +149,16 @@ func (p *Pool) dispatchLoop(ctx context.Context) {
 				return
 			}
 		}
-		p.dispatchOnce(ctx)
 	}
 }
 
-func (p *Pool) dispatchOnce(ctx context.Context) {
+// dispatchOnce claims up to one batch and hands it to the workers. The second
+// return value reports whether the claim came back full, meaning more due work
+// probably remains and the caller should claim again without waiting.
+func (p *Pool) dispatchOnce(ctx context.Context) (claimed int, full bool) {
 	free := cap(p.jobs) - len(p.jobs)
 	if free <= 0 {
-		return
+		return 0, false
 	}
 	batch := p.cfg.ClaimBatchSize
 	if batch > free {
@@ -151,16 +169,17 @@ func (p *Pool) dispatchOnce(ctx context.Context) {
 		if !isCtxErr(err) {
 			p.log.Error("dispatch claim failed", "error", err)
 		}
-		return
+		return 0, false
 	}
 	for i := range jobs {
 		select {
 		case p.jobs <- jobs[i]:
 		case <-ctx.Done():
-			return
+			return len(jobs), false
 		}
 	}
 	p.log.Debug("dispatched claims", "count", len(jobs))
+	return len(jobs), len(jobs) >= batch
 }
 
 // staleLoop periodically returns crashed-worker 'processing' deliveries to

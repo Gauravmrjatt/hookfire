@@ -91,8 +91,11 @@ Both runs ended with the same terminal snapshot:
 
 Sink-side accounting matched exactly in both runs: `1,000,000/1,000,000`
 requests received, `0` failed deliveries, `0` dead letters. The
-`average_latency_ms` / `p99_latency_ms` fields in `/v1/stats` are known to
-be broken (they reported 0.0002 ms) and are **not** cited anywhere here.
+`average_latency_ms` / `p99_latency_ms` fields in `/v1/stats` were broken
+during these runs (they reported 0.0002 ms) and are **not** cited anywhere
+here. Fixed afterwards: latencies are now recorded in microseconds instead of
+being truncated to whole milliseconds, so a sub-millisecond subscriber response
+no longer reads as zero. These numbers remain ingest-side only.
 
 Non-default settings used (both runs):
 
@@ -104,11 +107,15 @@ CLAIM_BATCH_SIZE=2000      # default 64
 ALLOW_PRIVATE_URLS=true    # the sink is 127.0.0.1:9000
 ```
 
-These overrides matter: with stock `DISPATCHER_INTERVAL=1s` and
-`CLAIM_BATCH_SIZE=64`, the dispatcher claims at most 64 deliveries/s and the
-engine looks ~50× slower than it is (64/s vs the measured 3,041/s). That is a
-configuration ceiling, not an engine ceiling, and the defaults are being
-revisited.
+These overrides matter, and so does their history: the runs above were taken
+before the dispatcher loop was fixed. With the old loop, stock
+`DISPATCHER_INTERVAL=1s` and `CLAIM_BATCH_SIZE=64` capped the engine at 64
+deliveries/s (~50× slower than the measured 3,041/s), because it slept a whole
+tick between batches. The loop now keeps claiming while the store returns full
+batches and only waits for the ticker when a claim comes back short, so that
+ceiling is gone. **The numbers below were still measured with the tuned config
+and have not been re-run against the new loop** - treat them as a floor, not a
+default-config figure.
 
 ### What the two runs say
 
@@ -189,10 +196,15 @@ redis-cli FLUSHALL
   linearly until Postgres commit rate caps out (Stage 2 in
   [scaling.md](scaling.md)). Adding engine *instances* is the next lever;
   adding goroutines to one process is not.
-- **The dispatcher defaults are wrong for throughput work.** `DISPATCHER_INTERVAL=1s`
-  with `CLAIM_BATCH_SIZE=64` caps the claim loop at ~64 deliveries/s. Any
-  benchmark that leaves them alone measures the tick interval, not the engine.
-  The two runs above both set `50ms` / `2000`.
+- **The dispatcher used to cap throughput at one batch per tick.** With the old
+  loop, `DISPATCHER_INTERVAL=1s` and `CLAIM_BATCH_SIZE=64` held the engine to
+  ~64 deliveries/s regardless of worker count, so a default-config benchmark
+  measured the tick interval rather than the engine. Fixed: `dispatchOnce` now
+  reports whether a claim came back full and the loop keeps claiming until it
+  comes back short, falling through to the ticker only when the queue is full
+  or the store is drained. Covered by
+  `internal/worker/dispatch_test.go::TestDispatchLoopDrainsWithoutWaitingForTick`.
+  Batch size now costs query round-trips rather than throughput.
 - **Retry storms** are the real threat under load: the jitter fraction
   (`JITTER_FRACTION`) and the `MAX_RETRY_DELAY` cap exist to prevent
   10,000 endpoints failing at once from synchronizing on the same retry tick.

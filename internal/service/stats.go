@@ -49,7 +49,10 @@ func (s *StatsService) SetActiveWorkers(n int64) {
 func (s *StatsService) Delivered(latency time.Duration) {
 	s.deliveries.Add(1)
 	s.successful.Add(1)
-	s.sampleLatency(latency.Milliseconds())
+	// Microseconds, not milliseconds: a local subscriber often answers in
+	// well under 1ms, and truncating to whole milliseconds recorded those
+	// attempts as 0 and made avg/p99 read as 0.00ms.
+	s.sampleLatency(latency.Microseconds())
 }
 func (s *StatsService) DeadLettered() {
 	s.deliveries.Add(1)
@@ -59,9 +62,10 @@ func (s *StatsService) DeadLettered() {
 
 // TerminalCounted is used when a delivery terminates via retry metrics
 // directly from workers; kept for completeness.
-func (s *StatsService) sampleLatency(ms int64) {
+// sampleLatency records one attempt latency in microseconds.
+func (s *StatsService) sampleLatency(us int64) {
 	s.mu.Lock()
-	s.latencies[s.latIdx] = ms
+	s.latencies[s.latIdx] = us
 	s.latIdx++
 	if s.latIdx == latencyRingSize {
 		s.latIdx = 0
@@ -87,13 +91,14 @@ func (s *StatsService) Snapshot(ctx context.Context, dlqCount int) Stats {
 		for _, v := range latencies {
 			total += v
 		}
-		avg = float64(total) / float64(len(latencies))
+		// The ring holds microseconds; the API reports milliseconds.
+		avg = float64(total) / float64(len(latencies)) / 1000.0
 		sort.Slice(latencies, func(i, j int) bool { return latencies[i] < latencies[j] })
 		idx := (len(latencies)*99 + 99) / 100
 		if idx > 0 {
 			idx--
 		}
-		p99 = float64(latencies[idx])
+		p99 = float64(latencies[idx]) / 1000.0
 	}
 
 	successRate := 0.0
