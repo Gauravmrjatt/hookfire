@@ -18,6 +18,20 @@ signing, retries, dead-lettering, replay, rate limiting, and metrics.
 > first — it teaches every concept in this README through **Node.js
 > comparisons**, with side-by-side code.
 
+**Measured, not estimated** (Nov 2026, single Apple M2, Postgres 16 + Redis 7,
+real engine + built-in sink, [full method & caveats](docs/performance.md)):
+
+- **3,041 deliveries/s** sustained across **40 workers**, ingest p95 **305 ms**
+  — 1,000,000/1,000,000 deliveries in 5m29s, 0 failed, 0 dead letters.
+- **2,066 deliveries/s** across **10 workers**, ingest p95 **291 ms** —
+  1,000,000/1,000,000 deliveries in 8m04s, 0 failed.
+- **0 duplicate deliveries** under **200 idempotency keys × 20 concurrent
+  ingests** (4,000 requests → exactly 200 events, each fanned out exactly once
+  per endpoint).
+- Ingest runs at **~110 events/s** with 100 endpoints per event — one
+  transaction = 1 event + 100 deliveries, so the commit rate is the bottleneck,
+  not the Go code. Micro-benchmarks put HMAC signing at ~440 ns (~2.3 M/s/core).
+
 ---
 
 ## Table of contents
@@ -414,7 +428,10 @@ graph TB
 ```
 
 - **Stage 1→2**: API is stateless; workers coordinate purely via DB row
-  locks. Bottleneck becomes Postgres commit rate.
+  locks. Bottleneck becomes Postgres commit rate. Measured on one node:
+  10 → 40 workers took delivery from 2,066 → 3,041 /s (sublinear), so
+  the next lever is more engine *replicas*, not more goroutines
+  ([docs/performance.md](docs/performance.md)).
 - **Stage 3**: `hash(endpoint_id) % N` partitions give *structural* per-endpoint
   ordering; a hot subscriber pins its partition (documented tradeoff).
 - **Stage 4**: Kafka replaces the claim loop; per-endpoint ordering comes from
@@ -598,7 +615,7 @@ tokenized secrets/JWTs/payloads never logged.
 | [docs/api.md](docs/api.md) | every endpoint: method, auth, headers, request/response, errors, curl |
 | [docs/architecture.md](docs/architecture.md) | request flow, concurrency model, partitioning strategy (PRD §27) |
 | [docs/reliability.md](docs/reliability.md) | at-least-once argument, crash recovery matrix, idempotency chain |
-| [docs/performance.md](docs/performance.md) | micro-benchmarks, load-test method, honest TODOs |
+| [docs/performance.md](docs/performance.md) | micro-benchmarks, measured end-to-end load tests, idempotency-under-concurrency results |
 | [docs/scaling.md](docs/scaling.md) | 5-stage progression, Kafka path, load-test methodology |
 | [docs/learning-guide-go-and-system-design.md](docs/learning-guide-go-and-system-design.md) | 🎓 **Go + system design tutorial for Node.js developers** |
 | [PRD.md](PRD.md) | the original product requirements |

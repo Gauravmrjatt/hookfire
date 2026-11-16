@@ -64,12 +64,19 @@ concurrency and reports ingest throughput, latency percentiles, and the
 ```bash
 make token JWT_SECRET=mine EXP=1h TOKEN=…   # or: go run ./cmd/token
 go run ./cmd/loadtest -url http://localhost:8080 -token $TOKEN \
-  -target http://subscriber:9000/hook -events 10000 -endpoints 100
+  -sink-port 9000 -events 10000 -endpoints 100 -concurrency 20 -drain-timeout 25m
 ```
 
-**Result placeholders (not measured on this machine — TODO):**
-> Scenario: 10,000 events × 100 endpoints × 10 workers.
-> Throughput: not measured · Latency: not measured · Success rate: not
-> measured · DB load: not measured.
-> Fill these in from a real `docker compose up` + `loadtest` run; do not
-> fabricate numbers (PRD §47 rule 14).
+**Measured (Nov 2026, single Apple M2, Postgres 16 + Redis 7)** — full
+method, config and caveats in [performance.md](performance.md):
+
+| Scenario | Ingest | Ingest p95 | Drain (1M deliveries) | Delivery throughput |
+|---|---|---|---|---|
+| 10,000 events × 100 endpoints × **10 workers** | 107 ev/s | 291 ms | 8m04s | **2,066 /s** |
+| 10,000 events × 100 endpoints × **40 workers** | 113 ev/s | 305 ms | 5m29s | **3,041 /s** |
+
+Both runs: 1,000,000/1,000,000 delivered, 0 failed, 0 dead letters. Scaling
+from 10 to 40 workers on one node is **sublinear** (1.47×), so stage 2
+horizontal replicas — not more goroutines per process — is the next lever.
+Requires `DISPATCHER_INTERVAL=50ms CLAIM_BATCH_SIZE=2000`; the defaults
+(1s/64) cap the claim loop at ~64 deliveries/s.
