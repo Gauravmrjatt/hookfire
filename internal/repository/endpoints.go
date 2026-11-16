@@ -87,8 +87,20 @@ func (r *Endpoints) List(ctx context.Context) ([]model.Endpoint, error) {
 
 // ListActive returns only active endpoints at this instant.
 func (r *Endpoints) ListActive(ctx context.Context) ([]model.Endpoint, error) {
-	rows, err := r.db.Query(ctx,
-		`SELECT `+endpointCols+` FROM endpoints WHERE active = TRUE ORDER BY created_at, id`)
+	return scanEndpoints(r.db.Query(ctx,
+		`SELECT `+endpointCols+` FROM endpoints WHERE active = TRUE ORDER BY created_at, id`))
+}
+
+// ListActiveTx is ListActive inside the caller's transaction. Event ingestion
+// must use this: querying the pool while holding an open transaction
+// deadlocks once concurrency reaches the pool size, because every request
+// owns one connection and then waits for a second.
+func (r *Endpoints) ListActiveTx(ctx context.Context, tx pgx.Tx) ([]model.Endpoint, error) {
+	return scanEndpoints(tx.Query(ctx,
+		`SELECT `+endpointCols+` FROM endpoints WHERE active = TRUE ORDER BY created_at, id`))
+}
+
+func scanEndpoints(rows pgx.Rows, err error) ([]model.Endpoint, error) {
 	if err != nil {
 		return nil, fmt.Errorf("list active endpoints: %w", err)
 	}

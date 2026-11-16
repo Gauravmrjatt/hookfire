@@ -110,7 +110,7 @@ func (s *EventService) Ingest(ctx context.Context, idempotencyKey string, req mo
 		}
 		result.Event = existing
 	} else {
-		endpoints, err := s.endpoints.ListActive(ctx)
+		endpoints, err := s.endpoints.ListActiveTx(ctx, tx)
 		if err != nil {
 			return AcceptedEvent{}, fmt.Errorf("list active endpoints: %w", err)
 		}

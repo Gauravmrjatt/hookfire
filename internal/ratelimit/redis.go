@@ -47,7 +47,9 @@ end
 
 redis.call('HMSET', KEYS[1], 'tokens', tokens, 'ts', now)
 redis.call('EXPIRE', KEYS[1], math.max(2, math.ceil(capacity / math.max(rate, 0.001)) * 2))
-return {allowed, tostring(tokens)}
+-- Return a single integer: the caller reads this with Cmd.Int(), and go-redis
+-- cannot unmarshal a multi-value reply into an int.
+return allowed
 `
 
 // Limiter decides whether a delivery to an endpoint is allowed right now.
