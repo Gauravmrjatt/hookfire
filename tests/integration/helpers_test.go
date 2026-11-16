@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -24,7 +25,7 @@ type stubSubscriber struct {
 	received chan struct{} // signals each reception
 }
 
-func subscriber(t *testing.T, hits *int, status int) *stubSubscriber {
+func subscriber(t *testing.T, hits *atomic.Int64, status int) *stubSubscriber {
 	t.Helper()
 	s := &stubSubscriber{status: status, received: make(chan struct{}, 1000)}
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +40,7 @@ func subscriber(t *testing.T, hits *int, status int) *stubSubscriber {
 				statusCode = s.fn(s.calls)
 			}
 			if statusCode >= 200 && statusCode < 300 {
-				*hits++
+				hits.Add(1)
 			}
 		}
 		s.lastBody = string(buf)

@@ -4,6 +4,8 @@
 package metrics
 
 import (
+	"sync"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
@@ -20,7 +22,24 @@ type Metrics struct {
 	ActiveWorkers          prometheus.Gauge
 }
 
+// New returns the process-wide instrument set.
+//
+// Collectors may be registered on the default Prometheus registry exactly once
+// per process, and promauto panics on a duplicate name. Anything that builds
+// more than one engine in a single process (an integration-test harness, for
+// example) used to panic with "duplicate metrics collector registration
+// attempted" on the second call, so the set is created once and shared.
 func New() *Metrics {
+	defaultOnce.Do(func() { defaultMetrics = newMetrics() })
+	return defaultMetrics
+}
+
+var (
+	defaultOnce    sync.Once
+	defaultMetrics *Metrics
+)
+
+func newMetrics() *Metrics {
 	return &Metrics{
 		EventsTotal: promauto.NewCounterVec(prometheus.CounterOpts{
 			Name: "webhook_events_total",

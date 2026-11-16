@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -14,7 +15,7 @@ import (
 func TestIngestAndDeliver(t *testing.T) {
 	h := newHarness(t, false)
 
-	var hits int
+	var hits atomic.Int64
 	subs := subscriber(t, &hits, 200)
 
 	// Create endpoint (PRD phase 2)
@@ -27,10 +28,25 @@ func TestIngestAndDeliver(t *testing.T) {
 		t.Fatalf("endpoint id missing: %v", body)
 	}
 
-	// Secret must never appear in API responses (PRD §32)
+	// The secret is shown exactly once, on creation, and never again
+	// (docs/api.md: "returned only here ... never serialized by GET").
 	raw, _ := json.Marshal(body)
-	if got := string(raw); strings.Contains(got, "secret") {
-		t.Errorf("endpoint response leaks secret: %s", got)
+	if got := string(raw); !strings.Contains(got, "secret") {
+		t.Errorf("create response must include the signing secret: %s", got)
+	}
+	status, list := h.do("GET", "/v1/endpoints", "", nil)
+	if status != 200 {
+		t.Fatalf("list endpoints: %d %v", status, list)
+	}
+	if raw, _ := json.Marshal(list); strings.Contains(string(raw), "secret") {
+		t.Errorf("list endpoints leaks the signing secret: %s", raw)
+	}
+	status, one := h.do("GET", "/v1/endpoints/"+endpointID, "", nil)
+	if status != 200 {
+		t.Fatalf("get endpoint: %d %v", status, one)
+	}
+	if raw, _ := json.Marshal(one); strings.Contains(string(raw), "secret") {
+		t.Errorf("get endpoint leaks the signing secret: %s", raw)
 	}
 
 	// Ingest event (PRD phase 3)
@@ -45,7 +61,7 @@ func TestIngestAndDeliver(t *testing.T) {
 		t.Fatalf("event id missing: %v", body)
 	}
 
-	waitFor(t, 5_000_000_000, func() bool { return hits == 1 }, "subscriber to receive webhook")
+	waitFor(t, 5_000_000_000, func() bool { return hits.Load() == 1 }, "subscriber to receive webhook")
 	status, body = h.do("GET", "/v1/events/"+eventID+"/deliveries", "", nil)
 	if status != 200 {
 		t.Fatalf("delivery history: %d", status)
@@ -111,7 +127,7 @@ func TestIdempotencyUniqueConstraint(t *testing.T) {
 func TestRetryThenDelivered(t *testing.T) {
 	h := newHarness(t, false)
 
-	var hits int
+	var hits atomic.Int64
 	sub := subscriber(t, &hits, 0)
 	sub.setSequence(func(call int) int {
 		if call == 1 {
@@ -124,7 +140,7 @@ func TestRetryThenDelivered(t *testing.T) {
 	h.do("POST", "/v1/events", `{"event_type":"x.y","payload":{}}`,
 		map[string]string{"Idempotency-Key": "retry-key"})
 
-	waitFor(t, 10_000_000_000, func() bool { return hits == 1 }, "delivery to succeed after retry")
+	waitFor(t, 10_000_000_000, func() bool { return hits.Load() == 1 }, "delivery to succeed after retry")
 }
 
 // TestPermanentFailureDLQReplay covers: subscriber 400 -> immediate DLQ ->
@@ -132,7 +148,7 @@ func TestRetryThenDelivered(t *testing.T) {
 func TestPermanentFailureDLQReplay(t *testing.T) {
 	h := newHarness(t, false)
 
-	var hits int
+	var hits atomic.Int64
 	sub := subscriber(t, &hits, 400)
 
 	h.do("POST", "/v1/endpoints", `{"name":"sub","url":"`+sub.URL()+`"}`, nil)
@@ -153,7 +169,7 @@ func TestPermanentFailureDLQReplay(t *testing.T) {
 	if status != 202 {
 		t.Fatalf("replay: %d %v", status, body)
 	}
-	waitFor(t, 5_000_000_000, func() bool { return hits == 1 }, "replayed delivery to succeed")
+	waitFor(t, 5_000_000_000, func() bool { return hits.Load() == 1 }, "replayed delivery to succeed")
 
 	_, deliveries := h.do("GET", "/v1/events/"+eventID+"/deliveries", "", nil)
 	assertDeliveryStatus(t, deliveries, "delivered")
@@ -163,7 +179,7 @@ func TestPermanentFailureDLQReplay(t *testing.T) {
 func TestRetriesToDLQ(t *testing.T) {
 	h := newHarness(t, false)
 
-	var hits int
+	var hits atomic.Int64
 	sub := subscriber(t, &hits, 500)
 
 	h.do("POST", "/v1/endpoints", `{"name":"sub","url":"`+sub.URL()+`"}`, nil)
@@ -180,7 +196,7 @@ func TestRetriesToDLQ(t *testing.T) {
 func TestRateLimitHoldsDelivery(t *testing.T) {
 	h := newHarness(t, true)
 
-	var hits int
+	var hits atomic.Int64
 	sub := subscriber(t, &hits, 200)
 
 	status, body := h.do("POST", "/v1/endpoints",
@@ -203,8 +219,8 @@ func TestRateLimitHoldsDelivery(t *testing.T) {
 
 	// rate=1/s with capacity (rate*burstFactor=1): deliveries must trickle.
 	time.Sleep(3 * time.Second)
-	if hits > 4 {
-		t.Errorf("rate limiter failed: %d deliveries completed within ~3s (limit 1/s)", hits)
+	if hits.Load() > 4 {
+		t.Errorf("rate limiter failed: %d deliveries completed within ~3s (limit 1/s)", hits.Load())
 	}
 	// everything still eventually delivers; nothing dead-lettered
 	if h.deadLetterCount() != 0 {
